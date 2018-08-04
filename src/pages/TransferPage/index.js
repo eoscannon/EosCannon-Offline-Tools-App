@@ -2,6 +2,7 @@
 import React, { Component } from "react";
 import { View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import CryptoJS from "crypto-js";
 
 // 自定义组件
 import Alert from "../../Components/Alert";
@@ -11,9 +12,10 @@ import TextInput from "../../Components/TextInput";
 import Select from "../../Components/Select";
 import WebView from "../../Components/WebView";
 import QrCode from "../../Components/QrCode";
-import { getTransactionHeadersFromJsonInfo, getChainIdFromJsonInfoOrConfig } from "../../utils/utils";
+import { getTransactionHeadersFromJsonInfo, getChainIdFromJsonInfoOrConfig, abi, PrivateKeyFormat, getPrivateKeyBySelectedPk } from "../../utils/utils";
 import { mainStyles } from "../../utils/style";
 import I18n from "../../utils/I18n";
+import {storage} from "../../utils/storage";
 
 export default class TransferPage extends Component {
     static navigationOptions = ( props ) => {
@@ -25,6 +27,8 @@ export default class TransferPage extends Component {
     constructor (props) {
         super(props);
         this.state = {
+            OriginPrivateKeyOptions: [],
+            PrivateKeyOptions: [],
             DigitOptions: {"0": "0", "1": "1", "2": "2", "3": "3", "4": "4", "5": "5"},
             jsonInfo: "",
             FromAccountName: "",
@@ -35,6 +39,7 @@ export default class TransferPage extends Component {
             transferSymbol: "EOS",
             transferMemo: "",
             PrivateKey: "",
+            SelectPrivateKey: "",
             GetTransactionButtonState: false,
             transaction: "",
             code: "",
@@ -43,20 +48,33 @@ export default class TransferPage extends Component {
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.navigation.state.params) {
-            const { jsonInfo } = nextProps.navigation.state.params;
+            const { jsonInfo, data } = nextProps.navigation.state.params;
+
             if (jsonInfo) {
                 this.setState({
                     jsonInfo,
-                });
+                }, () => {this.onChangeGetTransactionButtonState();});
             }
-            const { responseSelected } = nextProps.navigation.state.params;
-            if (responseSelected) {
+
+            if (data && data.responseSelectedPk) {
+                const PrivateKey = getPrivateKeyBySelectedPk(data.responseSelectedPk, this.state.OriginPrivateKeyOptions);
                 this.setState({
-                    transferDigit: responseSelected,
+                    SelectPrivateKey: data.responseSelectedPk,
+                    PrivateKey,
+                }, () => {this.onChangeGetTransactionButtonState();});
+            }
+
+            if (data && data.responseSelectedDigit) {
+                this.setState({
+                    transferDigit: data.responseSelectedDigit[0],
                 });
             }
         }
     }
+
+    componentWillMount() {
+        this.getPrivateKeyFromStorage();
+    };
 
     componentDidMount() {
         // setTimeout(() => {
@@ -67,7 +85,7 @@ export default class TransferPage extends Component {
     onGetTransactionTest = () => {
         const actions = [
             {
-                account: "eosio.token",
+                account: "everipediaiq",
                 name: "transfer",
                 authorization: [
                     {
@@ -78,7 +96,7 @@ export default class TransferPage extends Component {
                 data: {
                     from: "zhujingxinga",
                     to: "qwerasdfzxcv",
-                    quantity: "1.0000 EOS",
+                    quantity: "1.000 IQ",
                     memo :"",
                 },
             },
@@ -92,6 +110,7 @@ export default class TransferPage extends Component {
             chainId: "038f4b0fc8ff18a4f0842a8f0564611f6e96e8535901dd45e43ac8691a1c4dca",
             PrivateKey: "5J6vMf4P6Hn4GP5CdanmpZyEV3XcGvQ4CCqhfD7khwkjeS5hNgq",
             actions,
+            abi,
         };
         this.refs.WebViewComp.refs.WebView.postMessage(JSON.stringify(data));
     };
@@ -134,6 +153,7 @@ export default class TransferPage extends Component {
             blockHeader,
             chainId,
             actions,
+            abi,
             PrivateKey,
         };
         this.refs.WebViewComp.refs.WebView.postMessage(JSON.stringify(data));
@@ -144,6 +164,25 @@ export default class TransferPage extends Component {
         this.setState({
             transaction: e.nativeEvent.data,
             code: e.nativeEvent.data,
+        });
+    };
+
+    getPrivateKeyFromStorage = () => {
+        storage.load({key: "PrivateKeyArr"}).then((ret) => {
+            if (ret) {
+                const PrivateKeyOptionsStrArr = CryptoJS.AES.decrypt(ret, "'secret key 123'").toString(CryptoJS.enc.Utf8).split("&&");
+                PrivateKeyOptionsStrArr.forEach(item => {
+                    const obj = JSON.parse(item);
+                    this.state.OriginPrivateKeyOptions.push(obj);
+                    this.state.PrivateKeyOptions.push(obj.Nick + "：" + PrivateKeyFormat(obj.PrivateKey));
+                });
+                this.setState({
+                    OriginPrivateKeyOptions: this.state.OriginPrivateKeyOptions,
+                    PrivateKeyOptions: this.state.PrivateKeyOptions,
+                });
+            }
+        }).catch(err => {
+            console.log(err);
         });
     };
 
@@ -178,14 +217,14 @@ export default class TransferPage extends Component {
                 <View style={mainStyles.FromItem}>
                     <TextInput required={true} label={I18n.t("TransferPage TextInput transferSymbol label")} icon="unit" placeholder={I18n.t("TransferPage TextInput transferSymbol Placeholder")} value={this.state.transferSymbol} onChange={transferSymbol => this.setState({transferSymbol})} onBlur={this.onChangeGetTransactionButtonState}/>
                 </View>
-                <View style={[mainStyles.FromItem, {zIndex: 1000}]}>
-                    <Select required={true} label={I18n.t("TransferPage Select transferDigit label")} icon="digit" placeholder={I18n.t("TransferPage Select transferDigit Placeholder")} title={I18n.t("TransferPage Select transferDigit Title")} backUrl="TransferPage" isMultiSelect={false}  options={this.state.DigitOptions} selected={this.state.transferDigit} navigation={this.props.navigation}/>
+                <View style={mainStyles.FromItem}>
+                    <Select required={true} label={I18n.t("TransferPage Select transferDigit label")} icon="digit" placeholder={I18n.t("TransferPage Select transferDigit Placeholder")} title={I18n.t("TransferPage Select transferDigit Title")} backUrl="TransferPage" isMultiSelect={false}  options={this.state.DigitOptions} selected={this.state.transferDigit} navigation={this.props.navigation} responseName="responseSelectedDigit"/>
                 </View>
                 <View style={mainStyles.FromItem}>
                     <TextInput required={true} label="Memo" icon="unit" placeholder="Memo" value={this.state.transferMemo} onChange={transferMemo => this.setState({transferMemo})} onBlur={this.onChangeGetTransactionButtonState}/>
                 </View>
                 <View style={mainStyles.FromItem}>
-                    <TextInput required={true} label={I18n.t("Public TextInput PrivateKey")} icon="lock" placeholder={I18n.t("Public TextInput PrivateKey")} value={this.state.PrivateKey} onChange={PrivateKey => this.setState({PrivateKey})} onBlur={this.onChangeGetTransactionButtonState}/>
+                    <Select required={true} label={I18n.t("Public Select PrivateKey")} icon="lock" placeholder={I18n.t("Public Select PrivateKey")} title={I18n.t("Public Select PrivateKey Title")} backUrl="TransferPage" isMultiSelect={false}  options={this.state.PrivateKeyOptions} selected={this.state.SelectPrivateKey} navigation={this.props.navigation} responseName="responseSelectedPk"/>
                 </View>
                 <View style={mainStyles.FromItem}>
                     <Button name={I18n.t("Public SignButton Name")} onPress={this.onGetTransaction} Disable={this.state.GetTransactionButtonState}/>

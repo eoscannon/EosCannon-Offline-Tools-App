@@ -1,9 +1,10 @@
 // 引入公共组件
 import React, { Component } from "react";
 import { View, Text, Dimensions } from "react-native";
-import CustomMultiPicker from "./multipleSelect";
+import CustomMultiPicker from "../../utils/multipleSelect";
 import I18n from "../../utils/I18n";
 
+let ResponseSelected = [];
 export default class SelectPage extends Component {
     static navigationOptions = ( props ) => {
         return {
@@ -26,15 +27,18 @@ export default class SelectPage extends Component {
     }
 
     onCallback = (res) => {
-        const selected = res[0] ? res : res.slice(1);
-        this.setState({
-            selected,
-        });
+        // const selected = res[0] ? res : res.slice(1);
+        // this.setState({
+        //     selected,
+        // });
+        ResponseSelected = res[0] ? res : res.slice(1);
     };
 
     onConfirm = () => {
-        const { backUrl } = this.props.navigation.state.params;
-        this.props.navigation.navigate(backUrl, {responseSelected: this.state.selected});
+        const { backUrl, responseName } = this.props.navigation.state.params;
+        const data = {};
+        data[responseName] = ResponseSelected;
+        this.props.navigation.navigate(backUrl, {data});
     };
 
     render() {

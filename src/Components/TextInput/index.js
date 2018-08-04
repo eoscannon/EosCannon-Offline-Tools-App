@@ -6,9 +6,7 @@ import Icon from "react-native-vector-icons/Ionicons";
 export default class Input extends Component {
     constructor (props) {
         super(props);
-        this.state = {
-            value: this.props.value,
-        };
+        this.state = {};
     }
 
     render() {
@@ -43,7 +41,7 @@ export default class Input extends Component {
                     placeholder={this.props.placeholder}
                     placeholderTextColor="#aaa"
                     selectionColor="#111"
-                    value={this.state.value}
+                    value={this.props.value}
                     onBlur={this.props.onBlur}
                     onChangeText={this.props.onChange}
                     underlineColorAndroid="transparent"

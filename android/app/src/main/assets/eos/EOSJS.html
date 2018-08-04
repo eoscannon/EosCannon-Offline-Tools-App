@@ -8,14 +8,14 @@
         window.onload = function() {
             document.addEventListener('message', function(e) {
                 var data = JSON.parse(e.data);
-                var blockHeader = data.blockHeader;
-                var chainId = data.chainId;
-                var privateKey = data.PrivateKey;
-                var actions = data.actions;
-                getEos(chainId, privateKey, blockHeader, actions);
+                getEos(data);
             });
         };
-        function getEos(chainId, privateKey, blockHeader, actions) {
+        function getEos(data) {
+            var blockHeader = data.blockHeader;
+            var chainId = data.chainId;
+            var privateKey = data.PrivateKey;
+            var actions = data.actions;
             eos = Eos({
                 httpEndpoint: null,
                 transactionHeaders: blockHeader,
@@ -24,6 +24,9 @@
                 keyProvider: privateKey,
                 mockTransactions: () => 'pass',
             });
+            if (actions[0].name == "transfer") {
+                AddAbi(actions[0].account, data.abi);
+            }
             transaction(actions);
         }
         function transaction(actions) {
@@ -32,8 +35,19 @@
             }).then(tr => {
                 window.postMessage(JSON.stringify(tr.transaction));
             }).catch(err => {
-                window.postMessage(JSON.stringify(err));
+                window.postMessage(JSON.stringify(err.name));
             });
+        }
+        function AddAbi(contract, abi) {
+            if (contract !== 'eosio' && contract !== 'eosio.token') {
+                if (contract.toUpperCase() === 'EVERIPEDIAIQ') {
+                    eos.fc.abiCache.abi(contract, abi.everipediaiq.abi);
+                } else if (contract.toUpperCase() === 'CHALLENGEDAC') {
+                    eos.fc.abiCache.abi(contract, abi.eosdactokens.abi);
+                } else {
+                    eos.fc.abiCache.abi(contract, abi.default.abi);
+                }
+            }
         }
     </script>
 </head>

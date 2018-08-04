@@ -1,78 +1,65 @@
 import { StyleSheet, Dimensions } from "react-native";
 
-const ItemSize = (Dimensions.get("window").width - 10 - 30)/3;
+const HeaderBgImgHeight = Dimensions.get("window").width/375*240;
+const HeaderWelcomeImgMarginTop = HeaderBgImgHeight - 174;
 const mainStyles = StyleSheet.create({
     BodyBox: {
         position: "relative",
         flexBasis: "100%",
         backgroundColor: "#fff",
     },
-    LanguageBox: {
-        marginTop: 40,
-        paddingRight: 10,
-        fontSize: 16,
-        color: "#1890ff",
-        textAlign: "right",
+    HeaderBox: {
+        position: "relative",
+        width: "100%",
+        height: HeaderBgImgHeight,
     },
-    BodyTitle: {
-        marginTop: 40,
-        marginBottom: 40,
-        fontSize: 24,
-        fontWeight: "bold",
-        color: "rgb(245, 203, 72)",
-        textAlign: "center",
+    HeaderConBox: {
+        position: "absolute",
+        width: "100%",
+        height: "100%",
+        zIndex: 101,
+        paddingLeft: 20,
     },
-    ContentBox: {
+    HeaderWelcomeImg: {
+        marginTop: HeaderWelcomeImgMarginTop,
+    },
+    HeaderCannonImg: {},
+    HeaderLanguageImg: {
+        marginTop: 32,
+    },
+    HeaderBgImg: {
+        position: "absolute",
+        width: "100%",
+        height: "100%",
+    },
+    ListBox: {
+        paddingLeft: 20,
+    },
+    ListItemBox: {
         display: "flex",
         flexDirection: "row",
         flexWrap: "wrap",
-        justifyContent: "flex-start",
+        justifyContent: "space-between",
         alignItems: "center",
-        paddingLeft: 5,
-        paddingRight: 5,
+        borderBottomWidth: 1,
+        borderBottomColor: "#f2f2f2",
+        height: 64,
+        paddingRight: 20,
     },
-    ItemBox: {
-        position: "relative",
-        height: ItemSize,
-        width: ItemSize,
-        marginBottom: 10,
-        marginLeft: 5,
-        marginRight: 5,
-        borderRadius: 5,
-        overflow: "hidden",
+    ListItemButton: {
+        fontSize: 16,
+        color: "#000",
     },
-    ButtonBox: {
-        height: ItemSize,
-        width: ItemSize,
+    ListItemMoreIcon: {},
+    FooterBox: {
         display: "flex",
         flexDirection: "row",
+        flexWrap: "wrap",
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "#1890ff",
-        borderWidth: 1,
-        borderColor: "#1890ff",
+        marginTop: 64,
     },
-    ButtonText: {
-        fontSize: 14,
-        fontWeight: "bold",
-        color: "#fff",
-    },
-    ButtonDisableBox: {
-        height: ItemSize,
-        width: ItemSize,
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "#f5f5f5",
-        borderWidth: 1,
-        borderColor: "#d9d9d9",
-    },
-    ButtonDisableText: {
-        fontSize: 14,
-        fontWeight: "bold",
-        color: "rgba(0,0,0,.25)",
-    },
+    FooterIcon: {},
 });
 
 export {

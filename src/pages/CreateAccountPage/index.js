@@ -2,17 +2,23 @@
 import React, { Component } from "react";
 import { View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import CryptoJS from "crypto-js";
 
 // 自定义组件
 import Alert from "../../Components/Alert";
 import Button from "../../Components/Button";
 import TextArea from "../../Components/TextArea";
 import TextInput from "../../Components/TextInput";
+import Select from "../../Components/Select";
 import WebView from "../../Components/WebView";
 import QrCode from "../../Components/QrCode";
-import { getTransactionHeadersFromJsonInfo, getChainIdFromJsonInfoOrConfig } from "../../utils/utils";
+import {
+    getTransactionHeadersFromJsonInfo, getChainIdFromJsonInfoOrConfig, PrivateKeyFormat,
+    getPrivateKeyBySelectedPk
+} from "../../utils/utils";
 import { mainStyles } from "../../utils/style";
 import I18n from "../../utils/I18n";
+import {storage} from "../../utils/storage";
 
 export default class CreateAccountPage extends Component {
     static navigationOptions = ( props ) => {
@@ -24,6 +30,8 @@ export default class CreateAccountPage extends Component {
     constructor (props) {
         super(props);
         this.state = {
+            OriginPrivateKeyOptions: [],
+            PrivateKeyOptions: [],
             jsonInfo: "",
             CreateAccountName: "",
             NewAccountName: "",
@@ -33,6 +41,7 @@ export default class CreateAccountPage extends Component {
             StakeNet: "",
             StakeCpu: "",
             PrivateKey: "",
+            SelectPrivateKey: "",
             GetTransactionButtonState: false,
             transaction: "",
             code: "",
@@ -41,86 +50,33 @@ export default class CreateAccountPage extends Component {
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.navigation.state.params) {
-            const { jsonInfo } = nextProps.navigation.state.params;
+            const { jsonInfo, data } = nextProps.navigation.state.params;
+
             if (jsonInfo) {
                 this.setState({
                     jsonInfo,
-                });
+                }, () => {this.onChangeGetTransactionButtonState();});
+            }
+
+            if (data && data.responseSelectedPk) {
+                const PrivateKey = getPrivateKeyBySelectedPk(data.responseSelectedPk, this.state.OriginPrivateKeyOptions);
+                this.setState({
+                    SelectPrivateKey: data.responseSelectedPk,
+                    PrivateKey,
+                }, () => {this.onChangeGetTransactionButtonState();});
             }
         }
     }
+
+    componentWillMount() {
+        this.getPrivateKeyFromStorage();
+    };
 
     componentDidMount() {
         // setTimeout(() => {
         //     this.onGetTransactionTest();
         // }, 2000);
     }
-
-    onGetTransactionTest = () => {
-        const actions = [];
-        const NewAccountAction = {
-            account: "eosio",
-            name: "newaccount",
-            authorization: [
-                {
-                    actor: "qwerasdfzxcv",
-                    permission: "active",
-                },
-            ],
-            data: {
-                creator: "qwerasdfzxcv",
-                name: "qwertyuiopas",
-                owner: "EOS6U5LBH1RyFvsUGXDE4VxUVb2ZgYiPFyz4vmve5G1agtxdTtii5",
-                active: "EOS6U5LBH1RyFvsUGXDE4VxUVb2ZgYiPFyz4vmve5G1agtxdTtii5",
-            },
-        };
-        actions.push(NewAccountAction);
-        const BuyRamBytesAction = {
-            account: "eosio",
-            name: "buyrambytes",
-            authorization: [
-                {
-                    actor: "qwerasdfzxcv",
-                    permission: "active",
-                },
-            ],
-            data: {
-                payer: "qwerasdfzxcv",
-                receiver: "qwertyuiopas",
-                bytes: 4096,
-            },
-        };
-        actions.push(BuyRamBytesAction);
-        const DelegateBwAction = {
-            account: "eosio",
-            name: "delegatebw",
-            authorization: [
-                {
-                    actor: "qwerasdfzxcv",
-                    permission: "active",
-                },
-            ],
-            data: {
-                from: "qwerasdfzxcv",
-                receiver: "qwertyuiopas",
-                stake_net_quantity: "1.0000 EOS",
-                stake_cpu_quantity: "1.0000 EOS",
-                transfer: 0,
-            },
-        };
-        actions.push(DelegateBwAction);
-        const data = {
-            blockHeader: {
-                expiration: "2018-07-21T15:31:38",
-                ref_block_num: 64400,
-                ref_block_prefix: 3802453534
-            },
-            chainId: "038f4b0fc8ff18a4f0842a8f0564611f6e96e8535901dd45e43ac8691a1c4dca",
-            PrivateKey: "5J6vMf4P6Hn4GP5CdanmpZyEV3XcGvQ4CCqhfD7khwkjeS5hNgq",
-            actions,
-        };
-        this.refs.WebViewComp.refs.WebView.postMessage(JSON.stringify(data));
-    };
 
     openCamera = () => {
         this.props.navigation.navigate("Scanner", {backUrl: "CreateAccountPage"});
@@ -206,6 +162,25 @@ export default class CreateAccountPage extends Component {
         });
     };
 
+    getPrivateKeyFromStorage = () => {
+        storage.load({key: "PrivateKeyArr"}).then((ret) => {
+            if (ret) {
+                const PrivateKeyOptionsStrArr = CryptoJS.AES.decrypt(ret, "'secret key 123'").toString(CryptoJS.enc.Utf8).split("&&");
+                PrivateKeyOptionsStrArr.forEach(item => {
+                    const obj = JSON.parse(item);
+                    this.state.OriginPrivateKeyOptions.push(obj);
+                    this.state.PrivateKeyOptions.push(obj.Nick + "：" + PrivateKeyFormat(obj.PrivateKey));
+                });
+                this.setState({
+                    OriginPrivateKeyOptions: this.state.OriginPrivateKeyOptions,
+                    PrivateKeyOptions: this.state.PrivateKeyOptions,
+                });
+            }
+        }).catch(err => {
+            console.log(err);
+        });
+    };
+
     render() {
         return (
             <KeyboardAwareScrollView style={mainStyles.BodyBox}>
@@ -244,7 +219,7 @@ export default class CreateAccountPage extends Component {
                     <TextInput required={true} label="StakeCpu" icon="quantity" placeholder="StakeCpu" value={this.state.StakeCpu} onChange={StakeCpu => this.setState({StakeCpu})} onBlur={this.onChangeGetTransactionButtonState}/>
                 </View>
                 <View style={mainStyles.FromItem}>
-                    <TextInput required={true} label={I18n.t("Public TextInput PrivateKey")} icon="lock" placeholder={I18n.t("Public TextInput PrivateKey")} value={this.state.PrivateKey} onChange={PrivateKey => this.setState({PrivateKey})} onBlur={this.onChangeGetTransactionButtonState}/>
+                    <Select required={true} label={I18n.t("Public Select PrivateKey")} icon="lock" placeholder={I18n.t("Public Select PrivateKey")} title={I18n.t("Public Select PrivateKey Title")} backUrl="CreateAccountPage" isMultiSelect={false}  options={this.state.PrivateKeyOptions} selected={this.state.SelectPrivateKey} navigation={this.props.navigation} responseName="responseSelectedPk"/>
                 </View>
                 <View style={mainStyles.FromItem}>
                     <Button name={I18n.t("Public SignButton Name")} onPress={this.onGetTransaction} Disable={this.state.GetTransactionButtonState}/>

@@ -1,13 +1,11 @@
 // 引入公共组件
 import React, { Component } from "react";
-import { ScrollView, View, Text, TouchableOpacity } from "react-native";
+import { ScrollView, View, Text, Image, TouchableOpacity } from "react-native";
 import SplashScreen from "rn-splash-screen";
 
 // 自定义组件
 import { mainStyles } from "./style";
 import I18n from "../../utils/I18n";
-
-console.log("I18n.locale == ", I18n.locale);
 
 export default class HomePage extends Component {
     static navigationOptions = ( props ) => {
@@ -21,6 +19,11 @@ export default class HomePage extends Component {
         this.state = {
             isZh: I18n.locale == "zh",
             ActionsArray: [
+                {
+                    actionName: "Homepage ButtonName UpdateAuthPage",
+                    disabled: false,
+                    url: "UpdateAuthPage",
+                },
                 {
                     actionName: "Homepage ButtonName TransferPage",
                     disabled: false,
@@ -52,11 +55,6 @@ export default class HomePage extends Component {
                     url: "ProxyPage",
                 },
                 {
-                    actionName: "Homepage ButtonName UpdateAuthPage",
-                    disabled: false,
-                    url: "UpdateAuthPage",
-                },
-                {
                     actionName: "Homepage ButtonName RefundPage",
                     disabled: false,
                     url: "RefundPage",
@@ -80,25 +78,39 @@ export default class HomePage extends Component {
     };
 
     render() {
+        const HeaderWelcomeImgSource = this.state.isZh ? require("./images/welcomeTextCh.png") : require("./images/welcomeTextEn.png");
+        const HeaderCannonImggSource = this.state.isZh ? require("./images/toolsTextCh.png") : require("./images/toolsTextEn.png");
+        const HeaderLanguageImgSource = this.state.isZh ? require("./images/enBtn.png") : require("./images/chBtn.png");
         return (
             <ScrollView style={mainStyles.BodyBox}>
-                <Text style={mainStyles.LanguageBox} onPress={this.onChangeLanguage}>{this.state.isZh ? "English" : "中文"}</Text>
-                <Text style={mainStyles.BodyTitle}>{I18n.t("Homepage title")}</Text>
-                <View style={mainStyles.ContentBox}>
-                    {this.state.ActionsArray.map((item, index) => (
-                        <View style={mainStyles.ItemBox} key={index}>
-                            {item.disabled ? (
-                                <View style={mainStyles.ButtonDisableBox}>
-                                    <Text style={mainStyles.ButtonDisableText}>{item.actionName}</Text>
-                                </View>
-                            ) : (
-                                <TouchableOpacity style={mainStyles.ButtonBox} onPress={() => {this.props.navigation.navigate(item.url);}}>
-                                    <Text style={mainStyles.ButtonText}>{I18n.t(item.actionName)}</Text>
-                                </TouchableOpacity>
-                            )}
-                        </View>
-                    ))}
+                <View style={mainStyles.HeaderBox}>
+                    <View style={mainStyles.HeaderConBox}>
+                        <Image style={mainStyles.HeaderWelcomeImg} source={HeaderWelcomeImgSource} />
+                        <Image style={mainStyles.HeaderCannonImg} source={HeaderCannonImggSource} />
+                        <TouchableOpacity onPress={this.onChangeLanguage} style={{width: 140}}>
+                            <Image style={mainStyles.HeaderLanguageImg} source={HeaderLanguageImgSource} />
+                        </TouchableOpacity>
+                    </View>
+                    <Image style={mainStyles.HeaderBgImg} source={require("./images/bgBlue.png")} />
                 </View>
+                <View style={mainStyles.ListBox}>
+                    {this.state.ActionsArray.map((item, index) => {
+                        return item.disabled ? (
+                            <View key={index} style={mainStyles.ListItemBox}>
+                                <Text style={mainStyles.ListItemButton}>{I18n.t(item.actionName)}</Text>
+                            </View>
+                        ) : (
+                            <TouchableOpacity key={index} style={mainStyles.ListItemBox} onPress={() => {this.props.navigation.navigate(item.url);}}>
+                                <Text style={mainStyles.ListItemButton}>{I18n.t(item.actionName)}</Text>
+                                <Image style={mainStyles.ListItemMoreIcon} source={require("./images/arrow.png")} />
+                            </TouchableOpacity>
+                        );
+                    })}
+                </View>
+                <View style={mainStyles.FooterBox}>
+                    <Image style={mainStyles.FooterIcon} source={require("./images/eosLogo.png")} />
+                </View>
+                <View style={{height: 50}}/>
             </ScrollView>
         );
     }

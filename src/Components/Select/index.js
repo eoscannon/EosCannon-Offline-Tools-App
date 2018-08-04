@@ -10,13 +10,8 @@ export default class Select extends Component {
     }
 
     onPress = () => {
-        this.props.navigation.navigate("SelectPage", {
-            title: this.props.title,
-            backUrl: this.props.backUrl,
-            options: this.props.options,
-            isMultiSelect: this.props.isMultiSelect,
-            selected: this.props.selected,
-        });
+        const { title, backUrl, options, isMultiSelect, selected, responseName } = this.props;
+        this.props.navigation.navigate("SelectPage", { title, backUrl, options, isMultiSelect, selected, responseName });
     };
 
     getIconSource = () => {
@@ -25,21 +20,24 @@ export default class Select extends Component {
             return "ios-contact-outline";
         case "digit":
             return "ios-locate-outline";
+        case "lock":
+            return "ios-key-outline";
         default:
             return "ios-pricetag-outline";
         }
     };
 
     render() {
+        const { required, label, selected, isMultiSelect, placeholder } = this.props;
         return (
             <View style={styles.BodyBox}>
-                <Text style={styles.TextLabel}>{this.props.required ? (<Text style={styles.TextRequired}>*</Text>) : null}{this.props.label}：</Text>
+                <Text style={styles.TextLabel}>{required ? (<Text style={styles.TextRequired}>*</Text>) : null}{label}：</Text>
                 <View style={styles.TextInput}>
                     <TouchableOpacity style={styles.TextTextBox} onPress={this.onPress}>
-                        {this.props.selected ? (
-                            <Text style={styles.TextInputValue}>{this.props.isMultiSelect ? this.props.selected.join(", ") : this.props.selected }</Text>
+                        {selected ? (
+                            <Text style={styles.TextInputValue}>{isMultiSelect ? selected.join(", ") : selected }</Text>
                         ) : (
-                            <Text style={styles.TextInputPlaceholder}>{this.props.placeholder}</Text>
+                            <Text style={styles.TextInputPlaceholder}>{placeholder}</Text>
                         )}
                     </TouchableOpacity>
                     <Icon style={styles.TextIcon} name={this.getIconSource()} color="#999" size={20}/>
