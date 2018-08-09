@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     TextLabel: {
-        flexBasis: "26%",
+        flexBasis: "27%",
         textAlign: "left",
         lineHeight: 40,
         fontSize: 14,
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
         color: "#f5222d"
     },
     Input: {
-        width: "74%",
+        width: "73%",
         height: 40,
         paddingRight: 10,
         paddingLeft: 26,

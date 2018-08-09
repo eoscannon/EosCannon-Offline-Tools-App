@@ -14,8 +14,11 @@
                     case "checkPrivateKey" :
                         checkPrivateKey(data.data);
                         break;
+                    case "signTransaction" :
+                        signTransaction(data.data);
+                        break;
                     default:
-                    responseTestMsg("default");
+                        responseTestMsg("default");
                 }
             });
         };
@@ -41,6 +44,14 @@
             } else {
                 reaponse.data.PublicKey = "您的私钥不合法，未检测到对应的公钥";
             }
+            window.postMessage(JSON.stringify(reaponse));
+        }
+        function signTransaction(data) {
+            var reaponse = {
+                method: "signTransaction",
+                data: {},
+            };
+            reaponse.data.signature = eosjs_ecc.sign(data.UnSignedBuffer, data.PrivateKey, "hex");
             window.postMessage(JSON.stringify(reaponse));
         }
         function responseTestMsg(msg) {

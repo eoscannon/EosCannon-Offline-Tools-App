@@ -27,18 +27,14 @@ export default class SelectPage extends Component {
     }
 
     onCallback = (res) => {
-        // const selected = res[0] ? res : res.slice(1);
-        // this.setState({
-        //     selected,
-        // });
         ResponseSelected = res[0] ? res : res.slice(1);
     };
 
     onConfirm = () => {
         const { backUrl, responseName } = this.props.navigation.state.params;
-        const data = {};
-        data[responseName] = ResponseSelected;
-        this.props.navigation.navigate(backUrl, {data});
+        const SelectedData = {};
+        SelectedData[responseName] = ResponseSelected;
+        this.props.navigation.navigate(backUrl, {SelectedData});
     };
 
     render() {

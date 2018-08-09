@@ -17,6 +17,9 @@ localSave.set = (key, data) => {
 localSave.setPrivateKeyArr = (PrivateKeyArr) => {
     localSave.set("PrivateKeyArr", PrivateKeyArr);
 };
+localSave.setPrivateKeyPassword = (PrivateKeyPassword) => {
+    localSave.set("PrivateKeyPassword", PrivateKeyPassword);
+};
 export {
     storage,
     localSave,

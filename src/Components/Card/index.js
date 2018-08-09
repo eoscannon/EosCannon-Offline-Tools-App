@@ -21,7 +21,7 @@ export default class Card extends Component {
 const styles = StyleSheet.create({
     BodyBox: {
         position: "relative",
-        width: "94%",
+        width: "96%",
         height: "auto",
         marginLeft: "auto",
         marginRight: "auto",

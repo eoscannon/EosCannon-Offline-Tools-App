@@ -6,6 +6,8 @@ import SplashScreen from "rn-splash-screen";
 // 自定义组件
 import { mainStyles } from "./style";
 import I18n from "../../utils/I18n";
+import PrivatePage from "../PrivatePage";
+import SignPage from "../SignPage";
 
 export default class HomePage extends Component {
     static navigationOptions = ( props ) => {
@@ -20,44 +22,14 @@ export default class HomePage extends Component {
             isZh: I18n.locale == "zh",
             ActionsArray: [
                 {
-                    actionName: "Homepage ButtonName UpdateAuthPage",
+                    actionName: "Homepage ButtonName PrivatePage",
                     disabled: false,
-                    url: "UpdateAuthPage",
+                    url: "PrivatePage",
                 },
                 {
-                    actionName: "Homepage ButtonName TransferPage",
+                    actionName: "Homepage ButtonName SignPage",
                     disabled: false,
-                    url: "TransferPage",
-                },
-                {
-                    actionName: "Homepage ButtonName CreateAccountPage",
-                    disabled: false,
-                    url: "CreateAccountPage",
-                },
-                {
-                    actionName: "Homepage ButtonName StakePage",
-                    disabled: false,
-                    url: "StakePage",
-                },
-                {
-                    actionName: "Homepage ButtonName BuyRamBytesPage",
-                    disabled: false,
-                    url: "BuyRamBytesPage",
-                },
-                {
-                    actionName: "Homepage ButtonName VotePage",
-                    disabled: false,
-                    url: "VotePage",
-                },
-                {
-                    actionName: "Homepage ButtonName ProxyPage",
-                    disabled: false,
-                    url: "ProxyPage",
-                },
-                {
-                    actionName: "Homepage ButtonName RefundPage",
-                    disabled: false,
-                    url: "RefundPage",
+                    url: "SignPage",
                 },
             ],
         };

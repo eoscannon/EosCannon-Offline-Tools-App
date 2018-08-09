@@ -8,7 +8,7 @@ export default class QrCode extends Component {
     constructor (props) {
         super(props);
         this.state = {
-            QRCodeSize: Dimensions.get("window").width - 40,
+            QRCodeSize: Dimensions.get("window").width - 50,
         };
     }
 

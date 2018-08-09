@@ -52,12 +52,12 @@ const mainStyles = StyleSheet.create({
     },
     ListItemMoreIcon: {},
     FooterBox: {
+        height: 280,
         display: "flex",
         flexDirection: "row",
         flexWrap: "wrap",
         justifyContent: "center",
         alignItems: "center",
-        marginTop: 64,
     },
     FooterIcon: {},
 });
