@@ -27,6 +27,7 @@ export default {
     "SignPage Signed TextArea Placeholder": "Scanner QrCode To Get SignedTransaction",
     "Public SelectPage ConfirmButtonName": "Confirm",
     "Public Scanner NavigationTitle": "Scanner QrCode",
-    "Public OpenPassWord Title": "Please enter 6 password to read the private keys：",
+    "Public OpenPassWord Title Input": "Please enter the 6 bit to open the password：",
+    "Public OpenPassWord Title Set": "Please set the 6 bit to open the password：",
     "Public OpenPassWord ErrorTip": "The password is incorrect, please reenter it",
 };

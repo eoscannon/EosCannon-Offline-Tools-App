@@ -5,6 +5,7 @@ import {Provider} from "react-redux";
 import { StackNavigator } from "react-navigation";
 import { View, Modal, Text, AppState, TextInput, StyleSheet } from "react-native";
 import CryptoJS from "crypto-js";
+import SplashScreen from "rn-splash-screen";
 
 // 引入自定义组件
 import reducers from "./src/utils/reducers";
@@ -50,11 +51,15 @@ const Navigator = StackNavigator(
 const myStore = createStore(
     reducers
 );
+
+const OpenPassWordTitleInput = I18n.t("Public OpenPassWord Title Input");
+const OpenPassWordTitleSet = I18n.t("Public OpenPassWord Title Set");
 export default class App extends Component {
     constructor (props) {
         super(props);
         this.state = {
             isShowModal: true,
+            PassWordTitle: OpenPassWordTitleInput,
             PassWordErrorTip: "",
             openPassword: "",
             appState: AppState.currentState,
@@ -64,8 +69,13 @@ export default class App extends Component {
     componentWillMount() {
         storage.load({key: "PrivateKeyPassword"}).then((ret) => {
             global.OpenPasswordMd5 = ret;
+            SplashScreen.hide();
         }).catch(err => {
             global.OpenPasswordMd5 = "";
+            SplashScreen.hide();
+            this.setState({
+                PassWordTitle: OpenPassWordTitleSet,
+            });
         });
     }
 
@@ -79,6 +89,15 @@ export default class App extends Component {
 
     _handleAppStateChange = (nextAppState) => {
         if (this.state.appState === "background" && nextAppState === "active") {
+            if (!global.OpenPasswordMd5) {
+                this.setState({
+                    PassWordTitle: OpenPassWordTitleSet,
+                });
+            } else {
+                this.setState({
+                    PassWordTitle: OpenPassWordTitleInput,
+                });
+            }
             this.setModalShow();
         }
         this.setState({
@@ -134,7 +153,7 @@ export default class App extends Component {
                         onRequestClose={() => {}}
                     >
                         <View style={styles.ModalBody}>
-                            <Text style={styles.ModalBodyTitle}>{I18n.t("Public OpenPassWord Title")}</Text>
+                            <Text style={styles.ModalBodyTitle}>{this.state.PassWordTitle}</Text>
                             <TextInput
                                 style={styles.ModalBodyTextInput}
                                 onChangeText={this.onChangeTextInput}

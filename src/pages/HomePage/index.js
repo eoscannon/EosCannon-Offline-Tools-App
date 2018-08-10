@@ -1,7 +1,6 @@
 // 引入公共组件
 import React, { Component } from "react";
 import { ScrollView, View, Text, Image, TouchableOpacity } from "react-native";
-import SplashScreen from "rn-splash-screen";
 
 // 自定义组件
 import { mainStyles } from "./style";
@@ -33,12 +32,6 @@ export default class HomePage extends Component {
                 },
             ],
         };
-    }
-
-    componentDidMount() {
-        setTimeout(() => {
-            SplashScreen.hide();
-        }, 1000);
     }
 
     onChangeLanguage = () => {

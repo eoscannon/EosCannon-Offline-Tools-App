@@ -27,6 +27,7 @@ export default {
     "SignPage Signed TextArea Placeholder": "请扫码获取签名报文",
     "Public SelectPage ConfirmButtonName": "确定",
     "Public Scanner NavigationTitle": "扫描二维码",
-    "Public OpenPassWord Title": "请输入6位私钥读取密码：",
+    "Public OpenPassWord Title Input": "请输入6位开启密码：",
+    "Public OpenPassWord Title Set": "请设置6位开启密码：",
     "Public OpenPassWord ErrorTip": "密码不正确，请重新输入",
 };
