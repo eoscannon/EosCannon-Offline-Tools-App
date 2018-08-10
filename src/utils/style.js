@@ -31,6 +31,7 @@ const PrivatePageStyles = StyleSheet.create({
         marginBottom: 20,
     },
     TextItemBox: {
+        position: "relative",
         marginBottom: 10,
     },
     TextItemText: {

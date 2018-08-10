@@ -1,6 +1,6 @@
 // 引入公共组件
 import React, { Component } from "react";
-import { View, Text, Modal, Clipboard } from "react-native";
+import { View, Text, Modal, Clipboard, TouchableOpacity } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import Icon from "react-native-vector-icons/Ionicons";
 import CryptoJS from "crypto-js";
@@ -220,20 +220,39 @@ export default class PrivatePage extends Component {
                     ) : null}
                 </Card>
                 <Card title={I18n.t("PrivatePage CreatePrivateKey CardTitle And ButtonName")}>
+                    <View style={PrivatePageStyles.FromItem}>
+                        <Button name={I18n.t("PrivatePage CreatePrivateKey CardTitle And ButtonName")} onPress={this.createPrivateKey} Disable={true}/>
+                    </View>
                     {this.state.createPrivateKey ? (
                         <View style={PrivatePageStyles.TextBox}>
-                            <View style={PrivatePageStyles.TextItemBox}><Text style={PrivatePageStyles.TextItemText} selectable={true}>PrivateKey(私钥)：{this.state.createPrivateKey}</Text></View>
-                            <View style={PrivatePageStyles.TextItemBox}><Text style={PrivatePageStyles.TextItemText}>PublicKey(公钥，扫描下方二维码即可获得）：{this.state.createPublicKey}</Text></View>
+                            <View style={PrivatePageStyles.TextItemBox}>
+                                <Text style={PrivatePageStyles.TextItemText}>PrivateKey(私钥)：{this.state.createPrivateKey}</Text>
+                                <TouchableOpacity onPress={() => Clipboard.setString(this.state.createPrivateKey)} style={{position: "absolute", top: 0, right: 6}}>
+                                    <Icon name="md-copy" color="#222" size={22}/>
+                                </TouchableOpacity>
+                            </View>
+                            <View style={PrivatePageStyles.TextItemBox}>
+                                <Text style={PrivatePageStyles.TextItemText}>PublicKey(公钥，扫描二维码即可获得）：{this.state.createPublicKey}</Text>
+                                <TouchableOpacity onPress={() => Clipboard.setString(this.state.createPublicKey)} style={{position: "absolute", top: 0, right: 6}}>
+                                    <Icon name="md-copy" color="#222" size={22}/>
+                                </TouchableOpacity>
+                            </View>
                             <View style={PrivatePageStyles.FromItem}>
                                 <QrCode value={this.state.createPublicKey}/>
                             </View>
                         </View>
                     ) : null}
-                    <View style={PrivatePageStyles.FromItem}>
-                        <Button name={I18n.t("PrivatePage CreatePrivateKey CardTitle And ButtonName")} onPress={this.createPrivateKey} Disable={true}/>
-                    </View>
                 </Card>
                 <Card title={I18n.t("PrivatePage CheckPrivateKey CardTitle And ButtonName")} >
+                    <View style={PrivatePageStyles.FromItem}>
+                        <TextInput required={true} label={I18n.t("PrivatePage CheckPrivateKey TextInput PrivateKey")} icon="lock" placeholder={I18n.t("PrivatePage CheckPrivateKey TextInput PrivateKey")} value={this.state.checkPrivateKey} onChange={checkPrivateKey => this.setState({checkPrivateKey})} onBlur={() => {}}/>
+                        <TouchableOpacity onPress={() => Clipboard.getString().then(checkPrivateKey => {this.setState({checkPrivateKey});})} style={{position: "absolute", top: 2, right: 6, padding: 5}}>
+                            <Icon name="md-copy" color="#222" size={22}/>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={PrivatePageStyles.FromItem}>
+                        <Button name={I18n.t("PrivatePage CheckPrivateKey CardTitle And ButtonName")} onPress={this.checkPrivateKey} Disable={true}/>
+                    </View>
                     {this.state.checkPublicKey ? (
                         <View style={PrivatePageStyles.TextBox}>
                             <View style={PrivatePageStyles.TextItemBox}><Text style={PrivatePageStyles.TextItemText}>{I18n.t("PrivatePage CheckPrivateKey CheckResultLabel")}{this.state.checkPublicKey}</Text></View>
@@ -242,12 +261,6 @@ export default class PrivatePage extends Component {
                             </View>
                         </View>
                     ) : null}
-                    <View style={PrivatePageStyles.FromItem}>
-                        <TextInput required={true} label={I18n.t("PrivatePage CheckPrivateKey TextInput PrivateKey")} icon="lock" placeholder={I18n.t("PrivatePage CheckPrivateKey TextInput PrivateKey")} value={this.state.checkPrivateKey} onChange={checkPrivateKey => this.setState({checkPrivateKey})} onBlur={() => {}}/>
-                    </View>
-                    <View style={PrivatePageStyles.FromItem}>
-                        <Button name={I18n.t("PrivatePage CheckPrivateKey CardTitle And ButtonName")} onPress={this.checkPrivateKey} Disable={true}/>
-                    </View>
                 </Card>
                 <View style={{height: 100}}/>
             </KeyboardAwareScrollView>

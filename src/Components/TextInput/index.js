@@ -54,13 +54,14 @@ export default class Input extends Component {
 
 const styles = StyleSheet.create({
     BodyBox: {
+        position: "relative",
         display: "flex",
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
     },
     TextLabel: {
-        flexBasis: "27%",
+        flexBasis: "22%",
         textAlign: "left",
         lineHeight: 40,
         fontSize: 14,
@@ -72,7 +73,7 @@ const styles = StyleSheet.create({
         color: "#f5222d"
     },
     Input: {
-        width: "73%",
+        width: "78%",
         height: 40,
         paddingRight: 10,
         paddingLeft: 26,
@@ -89,6 +90,6 @@ const styles = StyleSheet.create({
     },
     TextIcon: {
         position: "absolute",
-        left: "27.5%",
+        left: "23%",
     },
 });
