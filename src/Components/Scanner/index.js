@@ -29,7 +29,7 @@ export default class Scanner extends Component {
     render() {
         return (
             <View style={styles.container}>
-                <QRscanner onRead={this.onRead} finderY={50}/>
+                <QRscanner onRead={this.onRead} finderY={50} hintTextPosition={100}/>
             </View>
         );
     }

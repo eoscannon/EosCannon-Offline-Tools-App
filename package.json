@@ -11,6 +11,7 @@
     "android": "react-native run-android",
     "keystore": "keytool -genkey -v -keystore my-release-key.keystore -alias my-key-alias -keyalg RSA -keysize 2048 -validity 10000",
     "bundle": "react-native bundle --entry-file index.js --bundle-output ./android/app/src/main/assets/index.android.jsbundle --platform android --assets-dest ./android/app/src/main/res/ --dev false",
+    "bundle-ios":"react-native bundle --entry-file index.js  --platform ios --dev false --bundle-output ./ios/bundle/index.ios.jsbundle --assets-dest ./ios/bundle",
     "clean": "rm -rf ./android/app/src/main/res/drawable-* ./android/app/src/main/res/drawable/*.gif ",
     "build": "cd android && ./gradlew assembleRelease"
   },

@@ -9,7 +9,7 @@ export default class EccWebView extends Component {
     }
 
     render() {
-        const WebViewSource = Platform.OS === "ios" ? require("./Ecc.html") : {uri: "file:///android_asset/ecc/Ecc.html", baseUrl:"file:///android_asset/ecc/"};
+        const WebViewSource = Platform.OS === "ios" ? {uri: "bundle/assets/src/Components/EccWebView/Ecc.html"} : {uri: "file:///android_asset/ecc/Ecc.html", baseUrl:"file:///android_asset/ecc/"};
         return (
             <View style={styles.mainBox}>
                 <WebView
@@ -19,6 +19,7 @@ export default class EccWebView extends Component {
                     onMessage={(e)=>{this.props.onMessage(e);}}
                     javaScriptEnabled={true}
                     mixedContentMode="always"
+                    originWhitelist={["*"]}
                 />
             </View>
         );

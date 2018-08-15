@@ -81,6 +81,7 @@ export default class App extends Component {
 
     componentDidMount() {
         AppState.addEventListener("change", this._handleAppStateChange);
+        SplashScreen.hide();
     }
 
     componentWillUnmount() {

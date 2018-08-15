@@ -1,6 +1,6 @@
 // 引入公共组件
 import React, { Component } from "react";
-import { View } from "react-native";
+import { View, TextInput } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import CryptoJS from "crypto-js";
 
@@ -137,8 +137,18 @@ export default class SignPage extends Component {
                 <View style={mainStyles.FromItem}>
                     <Button name={I18n.t("SignPage BlockInfo Button ButtonName")} onPress={this.openCamera} Disable={true}/>
                 </View>
-                <View style={mainStyles.FromItem}>
-                    <TextArea text={this.state.UnSignedBuffer} placeholder={I18n.t("SignPage BlockInfo TextArea Placeholder")}/>
+                {/*<View style={mainStyles.FromItem}>*/}
+                {/*<TextArea text={this.state.UnSignedBuffer} placeholder={I18n.t("SignPage BlockInfo TextArea Placeholder")}/>*/}
+                {/*</View>*/}
+                <View style={[mainStyles.FromItem, { justifyContent: "flex-start", alignItems: "flex-start" }]}>
+                    <TextInput
+                        style={{width: "100%", height: 104, padding: 7, borderColor: "#ddd", borderWidth: 1, borderRadius: 4}}
+                        onChangeText={(UnSignedBuffer) => this.setState({UnSignedBuffer})}
+                        value={this.state.UnSignedBuffer}
+                        placeholder={I18n.t("SignPage BlockInfo TextArea Placeholder")}
+                        multiline={true}
+                        contextMenuHidden={true}
+                    />
                 </View>
                 <View style={mainStyles.FromItem}>
                     <Select required={true} label={I18n.t("SignPage Select PrivateKey Label")} icon="lock" placeholder={I18n.t("SignPage Select PrivateKey Placeholder")} title={I18n.t("SignPage Select PrivateKey Title")} backUrl="SignPage" isMultiSelect={false}  options={this.state.PrivateKeyOptions} selected={this.state.SelectPrivateKey} navigation={this.props.navigation} responseName="responseSelectedPk"/>
@@ -152,9 +162,11 @@ export default class SignPage extends Component {
                 <View style={mainStyles.FromItem}>
                     <TextArea text={this.state.signature} placeholder={I18n.t("SignPage Signed TextArea Placeholder")} />
                 </View>
-                <View style={mainStyles.FromItem}>
-                    <QrCode value={this.state.signature}/>
-                </View>
+                {!!this.state.signature ? (
+                    <View style={mainStyles.FromItem}>
+                        <QrCode value={this.state.signature}/>
+                    </View>
+                ) : null}
                 <View style={{height: 100}}/>
             </KeyboardAwareScrollView>
         );

@@ -75,7 +75,28 @@ export default class PrivatePage extends Component {
         });
     };
 
+    checkPrivateKeyForAdd = () => {
+        const data = {
+            method: "checkPrivateKeyForAdd",
+            data: {
+                privateKey: this.state.addPrivateKey,
+            },
+        };
+        this.refs.Ecc.refs.WebView.postMessage(JSON.stringify(data));
+    };
+
+    checkPrivateKeyForAddResponse = (data) => {
+        if (data.IsPrivateKeyValid) {
+            this.addPrivateKey();
+        } else {
+            this.setState({
+                addPrivateKeyResult: I18n.t("PrivatePage AddPrivateKey addPrivateKeyResult CheckFail"),
+            });
+        }
+    };
+
     onMessage = (e) => {
+        console.log(e.nativeEvent.data);
         const response = JSON.parse(e.nativeEvent.data);
         switch (response.method) {
         case "createPrivateKey" :
@@ -83,6 +104,9 @@ export default class PrivatePage extends Component {
             break;
         case "checkPrivateKey" :
             this.checkPrivateKeyResponse(response.data);
+            break;
+        case "checkPrivateKeyForAdd" :
+            this.checkPrivateKeyForAddResponse(response.data);
             break;
         case "responseTestMsg" :
             console.log(response.data.msg);
@@ -115,6 +139,7 @@ export default class PrivatePage extends Component {
             }
         }
     };
+
 
     addPrivateKey = () => {
         // 已存在/未输入
@@ -197,7 +222,7 @@ export default class PrivatePage extends Component {
                         <TextInput required={true} label={I18n.t("PrivatePage AddPrivateKey TextInput PrivateKey Nick")} icon="user" placeholder={I18n.t("PrivatePage AddPrivateKey TextInput PrivateKey Nick")} value={this.state.addPrivateKeyNick} onChange={addPrivateKeyNick => this.setState({addPrivateKeyNick}, this.onChangeAddPrivateKeyButtonState)} onBlur={() => {}}/>
                     </View>
                     <View style={PrivatePageStyles.FromItem}>
-                        <Button name={I18n.t("PrivatePage AddPrivateKey CardTitle And ButtonName")} onPress={this.addPrivateKey} Disable={this.state.addPrivateKeyButtonState}/>
+                        <Button name={I18n.t("PrivatePage AddPrivateKey CardTitle And ButtonName")} onPress={this.checkPrivateKeyForAdd} Disable={this.state.addPrivateKeyButtonState}/>
                     </View>
                     {this.state.PrivateKeyFromStorage.length > 0 ? (
                         <View style={PrivatePageStyles.PrivateKeyList}>
