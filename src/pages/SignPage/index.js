@@ -60,23 +60,6 @@ export default class SignPage extends Component {
         this.getPrivateKeyFromStorage();
     };
 
-    componentDidMount() {
-        // setTimeout(() => {
-        //     this.onGetTransactionTest();
-        // }, 2000);
-    }
-
-    onGetTransactionTest = () => {
-        const data = {
-            method: "signTransaction",
-            data: {
-                UnSignedBuffer: "303338663462306663386666313861346630383432613866303536343631316636653936653835333539303164643435653433616338363931613163346463610cbd6a5bdf03442ba67900000000010000000000ea305500003f2a1ba6a24a0160d8749d4df774fb00000000a8ed32323160d8749d4df774fb60d8749d4df774fb102700000000000004454f5300000000204e00000000000004454f530000000000000000000000000000000000000000000000000000000000000000000000000000",
-                PrivateKey: "5J9ebToVxUZKDzdyWLEjvYfuzkzV87hqTtoBVq28Wu8JNFRS7fx",
-            },
-        };
-        this.refs.Ecc.refs.WebView.postMessage(JSON.stringify(data));
-    };
-
     openCamera = () => {
         this.props.navigation.navigate("Scanner", {backUrl: "SignPage"});
     };
@@ -90,11 +73,12 @@ export default class SignPage extends Component {
 
     onGetTransaction = () => {
         const { UnSignedBuffer, PrivateKey } = this.state;
+        const decryptPrivateKey = this.decryptPrivateKey(PrivateKey);
         const data = {
             method: "signTransaction",
             data: {
                 UnSignedBuffer,
-                PrivateKey,
+                PrivateKey: decryptPrivateKey,
             },
         };
         this.refs.Ecc.refs.WebView.postMessage(JSON.stringify(data));
@@ -108,14 +92,17 @@ export default class SignPage extends Component {
         });
     };
 
+    decryptPrivateKey = PrivateKey => CryptoJS.AES.decrypt(PrivateKey, global.OpenPassword).toString(CryptoJS.enc.Utf8);
+
     getPrivateKeyFromStorage = () => {
         storage.load({key: "PrivateKeyArr"}).then((ret) => {
             if (ret) {
-                const PrivateKeyOptionsStrArr = CryptoJS.AES.decrypt(ret, global.OpenPassword).toString(CryptoJS.enc.Utf8).split("&&");
+                const PrivateKeyOptionsStrArr = ret.split("&&");
                 PrivateKeyOptionsStrArr.forEach(item => {
                     const obj = JSON.parse(item);
+                    const decryptPrivateKey = this.decryptPrivateKey(obj.PrivateKey);
                     this.state.OriginPrivateKeyOptions.push(obj);
-                    this.state.PrivateKeyOptions.push(obj.Nick + "：" + PrivateKeyFormat(obj.PrivateKey));
+                    this.state.PrivateKeyOptions.push(obj.Nick + "：" + PrivateKeyFormat(decryptPrivateKey));
                 });
                 this.setState({
                     OriginPrivateKeyOptions: this.state.OriginPrivateKeyOptions,
@@ -137,9 +124,6 @@ export default class SignPage extends Component {
                 <View style={mainStyles.FromItem}>
                     <Button name={I18n.t("SignPage BlockInfo Button ButtonName")} onPress={this.openCamera} Disable={true}/>
                 </View>
-                {/*<View style={mainStyles.FromItem}>*/}
-                {/*<TextArea text={this.state.UnSignedBuffer} placeholder={I18n.t("SignPage BlockInfo TextArea Placeholder")}/>*/}
-                {/*</View>*/}
                 <View style={[mainStyles.FromItem, { justifyContent: "flex-start", alignItems: "flex-start" }]}>
                     <TextInput
                         style={{width: "100%", height: 104, padding: 7, borderColor: "#ddd", borderWidth: 1, borderRadius: 4}}

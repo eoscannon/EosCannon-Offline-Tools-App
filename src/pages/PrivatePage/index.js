@@ -116,12 +116,16 @@ export default class PrivatePage extends Component {
         }
     };
 
+    decryptPrivateKey = PrivateKey => CryptoJS.AES.decrypt(PrivateKey, global.OpenPassword).toString(CryptoJS.enc.Utf8);
+
+    encryptPrivateKey = PrivateKey => CryptoJS.AES.encrypt(PrivateKey, global.OpenPassword).toString();
+
     getPrivateKeyFromStorage = () => {
         storage.load({key: "PrivateKeyArr"}).then((ret) => {
             if (ret) {
-                const PrivateKeyFromStorage = CryptoJS.AES.decrypt(ret, global.OpenPassword).toString(CryptoJS.enc.Utf8).split("&&");
+                const PrivateKeyArrFromStorage = ret.split("&&");
                 this.setState({
-                    PrivateKeyFromStorage: PrivateKeyFromStorage || [],
+                    PrivateKeyFromStorage: PrivateKeyArrFromStorage || [],
                 });
             }
         }).catch(err => {
@@ -129,12 +133,16 @@ export default class PrivatePage extends Component {
         });
     };
 
-    isHadAddPrivateKey = (PrivateKey, Nick) => {
-        if (!PrivateKey || !Nick) {
+    isHadAddPrivateKey = (addPrivateKey, addPrivateKeyNick) => {
+        if (!addPrivateKey || !addPrivateKeyNick) {
             return true;
         }
+        let PrivateKeyItem = null;
+        let PrivateKeyDecrypt = "";
         for (var i = 0; i < this.state.PrivateKeyFromStorage.length; i++) {
-            if (this.state.PrivateKeyFromStorage[i].PrivateKey == PrivateKey) {
+            PrivateKeyItem = JSON.parse(this.state.PrivateKeyFromStorage[i]);
+            PrivateKeyDecrypt = this.decryptPrivateKey(PrivateKeyItem.PrivateKey);
+            if (PrivateKeyDecrypt == addPrivateKey || PrivateKeyItem.Nick == addPrivateKeyNick) {
                 return true;
             }
         }
@@ -150,14 +158,15 @@ export default class PrivatePage extends Component {
             return;
         }
         // 加密存储
+        const addPrivateKeyAes = this.encryptPrivateKey(this.state.addPrivateKey);
         const PrivateKeyData = {
-            PrivateKey: this.state.addPrivateKey,
+            PrivateKey: addPrivateKeyAes,
             Nick: this.state.addPrivateKeyNick,
         };
         this.state.PrivateKeyFromStorage.push(JSON.stringify(PrivateKeyData));
-        const PrivateKeyArr = CryptoJS.AES.encrypt(this.state.PrivateKeyFromStorage.join("&&"), global.OpenPassword).toString();
-        localSave.setPrivateKeyArr(PrivateKeyArr);
+        localSave.setPrivateKeyArr(this.state.PrivateKeyFromStorage.join("&&"));
         this.setState({
+            PrivateKeyFromStorage: this.state.PrivateKeyFromStorage,
             addPrivateKeyResult: I18n.t("PrivatePage AddPrivateKey addPrivateKeyResult Success"),
             addPrivateKey: "",
             addPrivateKeyNick: "",
@@ -166,15 +175,16 @@ export default class PrivatePage extends Component {
 
     deletePrivateKey = (item) => {
         const PrivateKeyFromStorage = this.state.PrivateKeyFromStorage.filter(i => i != item);
-        const PrivateKeyArr = PrivateKeyFromStorage.length === 0 ? "" : CryptoJS.AES.encrypt(PrivateKeyFromStorage.join("&&"), global.OpenPassword).toString();
+        const PrivateKeyArr = PrivateKeyFromStorage.length === 0 ? "" : this.encryptPrivateKey(PrivateKeyFromStorage.join("&&"));
         localSave.setPrivateKeyArr(PrivateKeyArr);
         this.setState({PrivateKeyFromStorage});
     };
 
     SeePrivateKey = (itemObj) => {
+        const PrivateKey = this.decryptPrivateKey(itemObj.PrivateKey);
         this.setState({
             isShowModal: true,
-            ModalPrivateKey: itemObj.PrivateKey,
+            ModalPrivateKey: PrivateKey,
         });
     };
 
@@ -230,9 +240,10 @@ export default class PrivatePage extends Component {
                             <View style={PrivatePageStyles.listItemBox}>
                                 {this.state.PrivateKeyFromStorage.map(item => {
                                     const itemObj = JSON.parse(item);
+                                    const PrivateKey = this.decryptPrivateKey(itemObj.PrivateKey);
                                     return (
-                                        <View style={PrivatePageStyles.listItem} key={itemObj.PrivateKey}>
-                                            <Text style={PrivatePageStyles.listItemCon}>{itemObj.Nick} : {PrivateKeyFormat(itemObj.PrivateKey)}</Text>
+                                        <View style={PrivatePageStyles.listItem} key={itemObj.Nick}>
+                                            <Text style={PrivatePageStyles.listItemCon}>{itemObj.Nick} : {PrivateKeyFormat(PrivateKey)}</Text>
                                             <View style={PrivatePageStyles.listItemActions}>
                                                 <Text style={PrivatePageStyles.listItemDelete} onPress={() => this.deletePrivateKey(item)}>{I18n.t("PrivatePage AddPrivateKey HadAddPrivateKey Delete")}</Text>
                                                 <Text style={PrivatePageStyles.listItemDelete} onPress={() => this.SeePrivateKey(itemObj)}>{I18n.t("PrivatePage AddPrivateKey HadAddPrivateKey Details")}</Text>
