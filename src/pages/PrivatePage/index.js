@@ -53,17 +53,19 @@ export default class PrivatePage extends Component {
     };
 
     createPrivateKeyResponse = (data) => {
+        const createPrivateKey = this.encryptPrivateKey(data.PrivateKey);
         this.setState({
             createPublicKey: data.PublicKey,
-            createPrivateKey: data.PrivateKey,
+            createPrivateKey,
         });
     };
 
     checkPrivateKey = () => {
+        const privateKey = this.decryptPrivateKey(this.state.checkPrivateKey);
         const data = {
             method: "checkPrivateKey",
             data: {
-                privateKey: this.state.checkPrivateKey,
+                privateKey,
             },
         };
         this.refs.Ecc.refs.WebView.postMessage(JSON.stringify(data));
@@ -181,10 +183,9 @@ export default class PrivatePage extends Component {
     };
 
     SeePrivateKey = (itemObj) => {
-        const PrivateKey = this.decryptPrivateKey(itemObj.PrivateKey);
         this.setState({
             isShowModal: true,
-            ModalPrivateKey: PrivateKey,
+            ModalPrivateKey: itemObj.PrivateKey,
         });
     };
 
@@ -213,7 +214,7 @@ export default class PrivatePage extends Component {
                     <View style={PrivatePageStyles.ModalBox}>
                         <View style={PrivatePageStyles.ModalBodyBox}>
                             <Icon onPress={() => this.setState({isShowModal: false})} style={PrivatePageStyles.CloseIcon} name="ios-close-circle-outline" color="#222" size={24}/>
-                            <Text style={PrivatePageStyles.ModalBodyText} selectable={true}>{this.state.ModalPrivateKey}</Text>
+                            <Text style={PrivatePageStyles.ModalBodyText} selectable={true}>{this.decryptPrivateKey(this.state.ModalPrivateKey)}</Text>
                             <Button name={I18n.t("PrivatePage AddPrivateKey CopyPrivateKey ButtonName")} onPress={this.CopyPrivateKey} Disable={true}/>
                             <Text style={PrivatePageStyles.ModalBodyCopyText}>{this.state.ModalCopyPrivateKeyState ? "已复制" : ""}</Text>
                         </View>
@@ -262,7 +263,7 @@ export default class PrivatePage extends Component {
                     {this.state.createPrivateKey ? (
                         <View style={PrivatePageStyles.TextBox}>
                             <View style={PrivatePageStyles.TextItemBox}>
-                                <Text style={PrivatePageStyles.TextItemText}>PrivateKey(私钥)：{this.state.createPrivateKey}</Text>
+                                <Text style={PrivatePageStyles.TextItemText}>PrivateKey(私钥)：{this.decryptPrivateKey(this.state.createPrivateKey)}</Text>
                                 <TouchableOpacity onPress={() => Clipboard.setString(this.state.createPrivateKey)} style={{position: "absolute", top: 0, right: 6}}>
                                     <Icon name="md-copy" color="#222" size={22}/>
                                 </TouchableOpacity>
