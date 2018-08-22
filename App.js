@@ -60,7 +60,7 @@ export default class App extends Component {
         this.state = {
             isShowModal: true,
             PassWordTitle: OpenPassWordTitleInput,
-            PassWordErrorTip: "",
+            PassWordErrorTip: "开启密码应为8位，且包含大小写字母、数字",
             openPassword: "",
             appState: AppState.currentState,
         };
@@ -121,7 +121,8 @@ export default class App extends Component {
     };
 
     onChangeTextInput = openPassword => {
-        openPassword.length == 6 ? this.SaveOpenPassword(openPassword) : this.setState({PassWordErrorTip: ""});
+        const reg = /(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8}/;
+        reg.test(openPassword) ? this.SaveOpenPassword(openPassword) : this.setState({PassWordErrorTip: "开启密码应为8位，且包含大小写字母、数字"});
         this.setState({openPassword});
     };
 
@@ -159,9 +160,8 @@ export default class App extends Component {
                                 style={styles.ModalBodyTextInput}
                                 onChangeText={this.onChangeTextInput}
                                 value={this.state.openPassword}
-                                maxLength={6}
+                                maxLength={8}
                                 secureTextEntry={true}
-                                keyboardType="numeric"
                                 autoFocus={true}
                             />
                             <Text style={styles.ModalBodyError}>{this.state.PassWordErrorTip}</Text>
