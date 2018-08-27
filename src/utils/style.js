@@ -76,13 +76,13 @@ const PrivatePageStyles = StyleSheet.create({
         borderBottomColor: "#efefef"
     },
     listItemCon: {
-        flexBasis: "75%",
+        flexBasis: "70%",
         fontSize: 14,
         color: "#555",
         lineHeight: 60,
     },
     listItemActions: {
-        flexBasis: "25%",
+        flexBasis: "30%",
         display: "flex",
         flexDirection: "row",
         flexWrap: "wrap",
@@ -120,14 +120,55 @@ const PrivatePageStyles = StyleSheet.create({
         marginBottom: 15,
     },
     ModalBodyCopyText: {
-        marginTop: 15,
         fontSize: 12,
         color: "#CC0066",
+        marginBottom: 15,
     },
     CloseIcon: {
         position: "absolute",
         right: 1,
         top: 0,
+    },
+    DeleteConfirmModalBox: {
+        flexBasis: "100%",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "rgba(0, 0, 0, .2)",
+    },
+    DeleteConfirmModalBodyBox: {
+        position: "relative",
+        height: 190,
+        width: "90%",
+        paddingTop: 20,
+        paddingBottom: 20,
+        paddingRight: 16,
+        paddingLeft: 16,
+        backgroundColor: "#fff",
+        borderRadius: 4,
+    },
+    DeleteConfirmModalBodyTitle: {
+        fontSize: 18,
+        fontWeight: "bold",
+        textAlign: "center",
+        marginBottom: 20,
+    },
+    DeleteConfirmModalBodyText: {
+        fontSize: 14,
+        textAlign: "center",
+        marginBottom: 25,
+    },
+    DeleteConfirmModalButtonBox: {
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+    },
+    DeleteConfirmModalButtonCancelBox: {
+        flexBasis: "48%",
+    },
+    DeleteConfirmModalButtonConfirmBox: {
+        flexBasis: "48%",
     },
 });
 export {

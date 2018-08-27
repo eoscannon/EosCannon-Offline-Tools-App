@@ -38,6 +38,9 @@ export default class PrivatePage extends Component {
             ModalPrivateKey: "",
             ModalCopyPrivateKeyState: false,
             isShowModal: false,
+            DeleteConfirmModalPrivateKey: "",
+            DeletePrivateKeyItem: "",
+            isShowDeleteConfirmModal: false,
         };
     }
 
@@ -61,11 +64,10 @@ export default class PrivatePage extends Component {
     };
 
     checkPrivateKey = () => {
-        const privateKey = this.decryptPrivateKey(this.state.checkPrivateKey);
         const data = {
             method: "checkPrivateKey",
             data: {
-                privateKey,
+                privateKey: this.state.checkPrivateKey,
             },
         };
         this.refs.Ecc.refs.WebView.postMessage(JSON.stringify(data));
@@ -118,9 +120,9 @@ export default class PrivatePage extends Component {
         }
     };
 
-    decryptPrivateKey = PrivateKey => CryptoJS.AES.decrypt(PrivateKey, global.OpenPassword).toString(CryptoJS.enc.Utf8);
+    decryptPrivateKey = PrivateKey => CryptoJS.AES.decrypt(PrivateKey, global.OpenPasswordMd5).toString(CryptoJS.enc.Utf8);
 
-    encryptPrivateKey = PrivateKey => CryptoJS.AES.encrypt(PrivateKey, global.OpenPassword).toString();
+    encryptPrivateKey = PrivateKey => CryptoJS.AES.encrypt(PrivateKey, global.OpenPasswordMd5).toString();
 
     getPrivateKeyFromStorage = () => {
         storage.load({key: "PrivateKeyArr"}).then((ret) => {
@@ -150,7 +152,6 @@ export default class PrivatePage extends Component {
         }
     };
 
-
     addPrivateKey = () => {
         // 已存在/未输入
         if (this.isHadAddPrivateKey(this.state.addPrivateKey, this.state.addPrivateKeyNick)) {
@@ -160,9 +161,8 @@ export default class PrivatePage extends Component {
             return;
         }
         // 加密存储
-        const addPrivateKeyAes = this.encryptPrivateKey(this.state.addPrivateKey);
         const PrivateKeyData = {
-            PrivateKey: addPrivateKeyAes,
+            PrivateKey: this.encryptPrivateKey(this.state.addPrivateKey),
             Nick: this.state.addPrivateKeyNick,
         };
         this.state.PrivateKeyFromStorage.push(JSON.stringify(PrivateKeyData));
@@ -175,11 +175,23 @@ export default class PrivatePage extends Component {
         });
     };
 
-    deletePrivateKey = (item) => {
-        const PrivateKeyFromStorage = this.state.PrivateKeyFromStorage.filter(i => i != item);
+    openDeletePrivateModal = (item) => {
+        const obj = JSON.parse(item);
+        this.setState({
+            isShowDeleteConfirmModal: true,
+            DeleteConfirmModalPrivateKey: obj.PrivateKey,
+            DeletePrivateKeyItem: item,
+        });
+    };
+
+    deletePrivateKey = () => {
+        const PrivateKeyFromStorage = this.state.PrivateKeyFromStorage.filter(i => i != this.state.DeletePrivateKeyItem);
         const PrivateKeyArr = PrivateKeyFromStorage.length === 0 ? "" : this.encryptPrivateKey(PrivateKeyFromStorage.join("&&"));
         localSave.setPrivateKeyArr(PrivateKeyArr);
-        this.setState({PrivateKeyFromStorage});
+        this.setState({
+            PrivateKeyFromStorage,
+            isShowDeleteConfirmModal: false,
+        });
     };
 
     SeePrivateKey = (itemObj) => {
@@ -208,15 +220,35 @@ export default class PrivatePage extends Component {
                 <EccWebView ref="Ecc" onMessage={this.onMessage}/>
                 <Modal
                     transparent={true}
+                    visible={this.state.isShowDeleteConfirmModal}
+                    onRequestClose={() => {}}
+                >
+                    <View style={PrivatePageStyles.DeleteConfirmModalBox}>
+                        <View style={PrivatePageStyles.DeleteConfirmModalBodyBox}>
+                            <Text style={PrivatePageStyles.DeleteConfirmModalBodyTitle}>{I18n.t("PrivatePage AddPrivateKey DeleteConfirmModal BodyTitle")}</Text>
+                            <Text style={PrivatePageStyles.DeleteConfirmModalBodyText}>{this.decryptPrivateKey(this.state.DeleteConfirmModalPrivateKey)}</Text>
+                            <View style={PrivatePageStyles.DeleteConfirmModalButtonBox}>
+                                <View style={PrivatePageStyles.DeleteConfirmModalButtonCancelBox}>
+                                    <Button name={I18n.t("PrivatePage AddPrivateKey DeleteConfirmModal CancelButtonName")} onPress={() => this.setState({isShowDeleteConfirmModal: false})} Disable={true}/>
+                                </View>
+                                <View style={PrivatePageStyles.DeleteConfirmModalButtonConfirmBox}>
+                                    <Button name={I18n.t("PrivatePage AddPrivateKey DeleteConfirmModal ConfirmButtonName")} onPress={this.deletePrivateKey} Disable={true}/>
+                                </View>
+                            </View>
+                        </View>
+                    </View>
+                </Modal>
+                <Modal
+                    transparent={true}
                     visible={this.state.isShowModal}
                     onRequestClose={() => {}}
                 >
                     <View style={PrivatePageStyles.ModalBox}>
                         <View style={PrivatePageStyles.ModalBodyBox}>
-                            <Icon onPress={() => this.setState({isShowModal: false})} style={PrivatePageStyles.CloseIcon} name="ios-close-circle-outline" color="#222" size={24}/>
+                            <Icon onPress={() => this.setState({isShowModal: false, ModalCopyPrivateKeyState: false})} style={PrivatePageStyles.CloseIcon} name="ios-close-circle-outline" color="#222" size={24}/>
                             <Text style={PrivatePageStyles.ModalBodyText} selectable={true}>{this.decryptPrivateKey(this.state.ModalPrivateKey)}</Text>
-                            <Button name={I18n.t("PrivatePage AddPrivateKey CopyPrivateKey ButtonName")} onPress={this.CopyPrivateKey} Disable={true}/>
                             <Text style={PrivatePageStyles.ModalBodyCopyText}>{this.state.ModalCopyPrivateKeyState ? "已复制" : ""}</Text>
+                            <Button name={I18n.t("PrivatePage AddPrivateKey CopyPrivateKey ButtonName")} onPress={this.CopyPrivateKey} Disable={true}/>
                         </View>
                     </View>
                 </Modal>
@@ -246,7 +278,7 @@ export default class PrivatePage extends Component {
                                         <View style={PrivatePageStyles.listItem} key={itemObj.Nick}>
                                             <Text style={PrivatePageStyles.listItemCon}>{itemObj.Nick} : {PrivateKeyFormat(PrivateKey)}</Text>
                                             <View style={PrivatePageStyles.listItemActions}>
-                                                <Text style={PrivatePageStyles.listItemDelete} onPress={() => this.deletePrivateKey(item)}>{I18n.t("PrivatePage AddPrivateKey HadAddPrivateKey Delete")}</Text>
+                                                <Text style={PrivatePageStyles.listItemDelete} onPress={() => this.openDeletePrivateModal(item)}>{I18n.t("PrivatePage AddPrivateKey HadAddPrivateKey Delete")}</Text>
                                                 <Text style={PrivatePageStyles.listItemDelete} onPress={() => this.SeePrivateKey(itemObj)}>{I18n.t("PrivatePage AddPrivateKey HadAddPrivateKey Details")}</Text>
                                             </View>
                                         </View>

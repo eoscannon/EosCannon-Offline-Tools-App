@@ -6,6 +6,7 @@ import { StackNavigator } from "react-navigation";
 import { View, Modal, Text, AppState, TextInput, StyleSheet } from "react-native";
 import CryptoJS from "crypto-js";
 import SplashScreen from "rn-splash-screen";
+import Icon from "react-native-vector-icons/Ionicons";
 
 // 引入自定义组件
 import reducers from "./src/utils/reducers";
@@ -17,6 +18,7 @@ import PrivatePage from "./src/pages/PrivatePage";
 import SignPage from "./src/pages/SignPage";
 import Scanner from "./src/Components/Scanner";
 import SelectPage from "./src/Components/SelectPage";
+import Button from "./src/Components/Button";
 import {storage, localSave} from "./src/utils/storage";
 
 // 自定义变量
@@ -54,14 +56,16 @@ const myStore = createStore(
 
 const OpenPassWordTitleInput = I18n.t("Public OpenPassWord Title Input");
 const OpenPassWordTitleSet = I18n.t("Public OpenPassWord Title Set");
+const OpenPassWordTitleInputErrorTip = I18n.t("Public OpenPassWord Input ErrorTip");
 export default class App extends Component {
     constructor (props) {
         super(props);
         this.state = {
             isShowModal: true,
             PassWordTitle: OpenPassWordTitleInput,
-            PassWordErrorTip: "开启密码应为8位，且包含大小写字母、数字",
+            PassWordErrorTip: OpenPassWordTitleInputErrorTip,
             openPassword: "",
+            openPasswordEntry: true,
             appState: AppState.currentState,
         };
     }
@@ -122,14 +126,13 @@ export default class App extends Component {
 
     onChangeTextInput = openPassword => {
         const reg = /(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8}/;
-        reg.test(openPassword) ? this.SaveOpenPassword(openPassword) : this.setState({PassWordErrorTip: "开启密码应为8位，且包含大小写字母、数字"});
-        this.setState({openPassword});
+        reg.test(openPassword) ? this.setState({PassWordErrorTip: "", openPassword}) : this.setState({PassWordErrorTip: OpenPassWordTitleInputErrorTip, openPassword});
     };
 
-    SaveOpenPassword = openPassword => {
-        const md5 = CryptoJS.MD5(openPassword).toString();
+    SaveOpenPassword = () => {
+        const openPassword = CryptoJS.MD5(this.state.openPassword).toString();
         if (global.OpenPasswordMd5) {
-            if ( md5 === global.OpenPasswordMd5) {
+            if ( openPassword === global.OpenPasswordMd5) {
                 global.OpenPassword = openPassword;
                 this.setModalHidden();
             } else {
@@ -138,9 +141,8 @@ export default class App extends Component {
                 });
             }
         } else {
-            global.OpenPasswordMd5 = md5;
-            global.OpenPassword = openPassword;
-            localSave.setPrivateKeyPassword(md5);
+            global.OpenPasswordMd5 = openPassword;
+            localSave.setPrivateKeyPassword(openPassword);
             this.setModalHidden();
         }
     };
@@ -155,16 +157,27 @@ export default class App extends Component {
                         onRequestClose={() => {}}
                     >
                         <View style={styles.ModalBody}>
-                            <Text style={styles.ModalBodyTitle}>{this.state.PassWordTitle}</Text>
-                            <TextInput
-                                style={styles.ModalBodyTextInput}
-                                onChangeText={this.onChangeTextInput}
-                                value={this.state.openPassword}
-                                maxLength={8}
-                                secureTextEntry={true}
-                                autoFocus={true}
-                            />
-                            <Text style={styles.ModalBodyError}>{this.state.PassWordErrorTip}</Text>
+                            <View style={styles.FromItem}>
+                                <Text style={styles.Title}>{this.state.PassWordTitle}</Text>
+                            </View>
+                            <View style={styles.FromItem}>
+                                <TextInput
+                                    style={styles.passwordInput}
+                                    onChangeText={this.onChangeTextInput}
+                                    value={this.state.openPassword}
+                                    maxLength={8}
+                                    secureTextEntry={this.state.openPasswordEntry}
+                                    autoFocus={true}
+                                    underlineColorAndroid="transparent"
+                                />
+                                <Icon style={styles.passwordEye} name={this.state.openPasswordEntry ? "ios-eye" : "ios-eye-off"} color="#555" size={22} onPress={() => this.setState({openPasswordEntry: !this.state.openPasswordEntry})}/>
+                            </View>
+                            <View style={styles.FromItem}>
+                                <Text style={styles.Error}>{this.state.PassWordErrorTip}</Text>
+                            </View>
+                            <View style={styles.FromItem}>
+                                <Button name={I18n.t("Public OpenPassWord Button ButtonName")} onPress={this.SaveOpenPassword} Disable={true}/>
+                            </View>
                         </View>
                     </Modal>
                 ) : <Navigator/>}
@@ -181,18 +194,33 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
     },
-    ModalBodyTitle: {
+    FromItem: {
+        position: "relative",
+        marginBottom: 20,
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    Title: {
         fontSize: 22,
         marginBottom: 22,
     },
-    ModalBodyTextInput: {
+    passwordInput: {
         width: "80%",
         height: 40,
+        padding: 0,
         borderColor: "#eee",
         borderWidth: 1,
+        fontSize: 22,
+        lineHeight: 40,
         textAlign: "center",
     },
-    ModalBodyError: {
+    passwordEye: {
+        position: "absolute",
+        right: 12,
+    },
+    Error: {
         fontSize: 14,
         color: "#CC6666",
         marginTop: 14,

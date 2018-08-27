@@ -92,7 +92,7 @@ export default class SignPage extends Component {
         });
     };
 
-    decryptPrivateKey = PrivateKey => CryptoJS.AES.decrypt(PrivateKey, global.OpenPassword).toString(CryptoJS.enc.Utf8);
+    decryptPrivateKey = PrivateKey => CryptoJS.AES.decrypt(PrivateKey, global.OpenPasswordMd5).toString(CryptoJS.enc.Utf8);
 
     getPrivateKeyFromStorage = () => {
         storage.load({key: "PrivateKeyArr"}).then((ret) => {
