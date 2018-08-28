@@ -125,7 +125,7 @@ export default class App extends Component {
     };
 
     onChangeTextInput = openPassword => {
-        const reg = /(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8}/;
+        const reg = /(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,}/;
         reg.test(openPassword) ? this.setState({PassWordErrorTip: "", openPassword}) : this.setState({PassWordErrorTip: OpenPassWordTitleInputErrorTip, openPassword});
     };
 
@@ -165,7 +165,6 @@ export default class App extends Component {
                                     style={styles.passwordInput}
                                     onChangeText={this.onChangeTextInput}
                                     value={this.state.openPassword}
-                                    maxLength={8}
                                     secureTextEntry={this.state.openPasswordEntry}
                                     autoFocus={true}
                                     underlineColorAndroid="transparent"
@@ -213,7 +212,6 @@ const styles = StyleSheet.create({
         borderColor: "#eee",
         borderWidth: 1,
         fontSize: 22,
-        lineHeight: 40,
         textAlign: "center",
     },
     passwordEye: {

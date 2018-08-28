@@ -15,7 +15,7 @@ export default class QrCode extends Component {
     render() {
         return (
             <QRCode
-                value={this.props.value || I18n.t("Homepage title")}
+                value={this.props.value}
                 size={this.state.QRCodeSize}
                 bgColor='#000'
                 fgColor='#fff'/>
