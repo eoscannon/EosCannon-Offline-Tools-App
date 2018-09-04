@@ -186,7 +186,7 @@ export default class PrivatePage extends Component {
 
     deletePrivateKey = () => {
         const PrivateKeyFromStorage = this.state.PrivateKeyFromStorage.filter(i => i != this.state.DeletePrivateKeyItem);
-        const PrivateKeyArr = PrivateKeyFromStorage.length === 0 ? "" : this.encryptPrivateKey(PrivateKeyFromStorage.join("&&"));
+        const PrivateKeyArr = PrivateKeyFromStorage.length === 0 ? "" : PrivateKeyFromStorage.join("&&");
         localSave.setPrivateKeyArr(PrivateKeyArr);
         this.setState({
             PrivateKeyFromStorage,
