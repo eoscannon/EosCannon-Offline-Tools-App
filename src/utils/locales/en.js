@@ -1,6 +1,7 @@
 export default {
     "Homepage ButtonName PrivatePage": "PrivateKey Manage",
     "Homepage ButtonName SignPage": "Sign",
+    "Homepage ButtonName LoginPage": "Login By Scan",
     "PrivatePage AddPrivateKey CardTitle And ButtonName": "Add PrivateKey",
     "PrivatePage AddPrivateKey TextInput PrivateKey": "PrvaKey",
     "PrivatePage AddPrivateKey TextInput PrivateKey Nick": "Nick",
@@ -31,9 +32,10 @@ export default {
     "SignPage Signed TextArea Placeholder": "SignedTransaction",
     "Public SelectPage ConfirmButtonName": "Confirm",
     "Public Scanner NavigationTitle": "Scanner QrCode",
-    "Public OpenPassWord Title Input": "Please enter the 8 bit to open the password：",
-    "Public OpenPassWord Title Set": "Please set the 8 bit to open the password：",
+    "Public OpenPassWord Title Input": "Please enter the 6 bit or more to open the password：",
+    "Public OpenPassWord Title Set": "Please set the 6 bit or more to open the password：",
     "Public OpenPassWord ErrorTip": "The password is incorrect, please reenter it",
-    "Public OpenPassWord Input ErrorTip": "The password should be 8 bits and contain uppercase, lowercase letters and numbers.",
+    "Public OpenPassWord Input ErrorTip": "The password should be 6 bits or more.",
     "Public OpenPassWord Button ButtonName": "Enter",
+    "LoginPage account Label": "Account",
 };

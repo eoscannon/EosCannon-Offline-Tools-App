@@ -22,6 +22,9 @@
                     case "signTransaction" :
                         signTransaction(data.data);
                         break;
+                    case "signLoginTransaction" :
+                        signLoginTransaction(data.data);
+                        break;
                     default:
                         responseTestMsg("default");
                 }
@@ -81,6 +84,19 @@
                 method: "signVerify",
                 data: {
                     isVerify: isVerify,
+                },
+            };
+            window.postMessage(JSON.stringify(response));
+        }
+        function signLoginTransaction(data){
+            var time = Math.round(new Date().getTime()/1000);
+            var newData = time + data.account + data.UnSignedBuffer + 'wallet';
+            var signature = eosjs_ecc.sign(newData, data.PrivateKey);
+            var response = {
+                method: "signLoginTransaction",
+                data: {
+                    signature: signature,
+                    time:time
                 },
             };
             window.postMessage(JSON.stringify(response));

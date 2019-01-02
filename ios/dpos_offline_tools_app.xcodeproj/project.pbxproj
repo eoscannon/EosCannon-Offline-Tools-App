@@ -708,7 +708,7 @@
 				3F17648E2101CE99000FC785 /* Recovered References */,
 				FA593B62E3FA4DA9BF381650 /* Resources */,
 			);
-			indentWidth = 2;
+			indentWidth = 1;
 			sourceTree = "<group>";
 			tabWidth = 2;
 			usesTabs = 0;
@@ -841,7 +841,7 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
-						DevelopmentTeam = 5T33Y23W5F;
+						DevelopmentTeam = UCHV6HW755;
 						ProvisioningStyle = Automatic;
 					};
 					2D02E47A1E0B4A5D006451C7 = {
@@ -1448,7 +1448,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
-				DEVELOPMENT_TEAM = 5T33Y23W5F;
+				DEVELOPMENT_TEAM = UCHV6HW755;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-camera/ios/**",
@@ -1464,7 +1464,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = bystake.offline.tools.inHouse;
+				PRODUCT_BUNDLE_IDENTIFIER = bystake.offline.tools.dev;
 				PRODUCT_NAME = dpos_offline_tools_app;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -1479,7 +1479,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 5T33Y23W5F;
+				DEVELOPMENT_TEAM = UCHV6HW755;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-camera/ios/**",
@@ -1495,7 +1495,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = bystake.offline.tools.inHouse;
+				PRODUCT_BUNDLE_IDENTIFIER = bystake.offline.tools.dev;
 				PRODUCT_NAME = dpos_offline_tools_app;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				VERSIONING_SYSTEM = "apple-generic";

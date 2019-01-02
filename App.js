@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import {createStore } from "redux";
 import {Provider} from "react-redux";
 import { StackNavigator } from "react-navigation";
-import { View, Modal, Text, AppState, TextInput, StyleSheet } from "react-native";
+import { View, Modal, Text, AppState, TextInput, StyleSheet, Clipboard } from "react-native";
 import CryptoJS from "crypto-js";
 import SplashScreen from "rn-splash-screen";
 import Icon from "react-native-vector-icons/Ionicons";
@@ -16,6 +16,8 @@ import I18n from "./src/utils/I18n";
 import HomePage from "./src/pages/HomePage";
 import PrivatePage from "./src/pages/PrivatePage";
 import SignPage from "./src/pages/SignPage";
+import LoginPage from "./src/pages/LoginPage";
+
 import Scanner from "./src/Components/Scanner";
 import SelectPage from "./src/Components/SelectPage";
 import Button from "./src/Components/Button";
@@ -24,9 +26,11 @@ import {storage, localSave} from "./src/utils/storage";
 // 自定义变量
 const Navigator = StackNavigator(
     {
+
         HomePage: { screen: HomePage },
         PrivatePage: { screen: PrivatePage },
         SignPage: { screen: SignPage },
+        LoginPage: { screen: LoginPage },
         Scanner: { screen: Scanner },
         SelectPage: { screen: SelectPage },
     },
@@ -104,6 +108,8 @@ export default class App extends Component {
                 });
             }
             this.setModalShow();
+        } else {
+            Clipboard.setString("");
         }
         this.setState({
             appState: nextAppState,

@@ -22,6 +22,9 @@
                     case "signTransaction" :
                         signTransaction(data.data);
                         break;
+                    case "signLoginTransaction" :
+                        signLoginTransaction(data.data);
+                        break;
                     default:
                         responseTestMsg("default");
                 }
@@ -74,6 +77,21 @@
             window.postMessage(JSON.stringify(response));
             // signVerify(signature, data.UnSignedBuffer.actions[0].data, data.PrivateKey);
         }
+
+        function signLoginTransaction(data){
+            var time = Math.round(new Date().getTime()/1000);
+            var newData = time + data.account + data.UnSignedBuffer + 'wallet';
+            var signature = eosjs_ecc.sign(newData, data.PrivateKey);
+            var response = {
+                method: "signLoginTransaction",
+                data: {
+                    signature: signature,
+                    time:time
+                },
+            };
+            window.postMessage(JSON.stringify(response));
+        }
+
         function signVerify(signature, data, pk) {
             var PublicKey = eosjs_ecc.privateToPublic(pk);
             var isVerify = eosjs_ecc.verify(signature, data, PublicKey, "hex", false);

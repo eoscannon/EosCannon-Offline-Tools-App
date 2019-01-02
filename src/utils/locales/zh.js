@@ -1,6 +1,7 @@
 export default {
     "Homepage ButtonName PrivatePage": "私钥管理",
     "Homepage ButtonName SignPage": "签名",
+    "Homepage ButtonName LoginPage": "扫码登陆",
     "PrivatePage AddPrivateKey CardTitle And ButtonName": "添加私钥",
     "PrivatePage AddPrivateKey TextInput PrivateKey": "私钥",
     "PrivatePage AddPrivateKey TextInput PrivateKey Nick": "别名",
@@ -31,9 +32,11 @@ export default {
     "SignPage Signed TextArea Placeholder": "签名报文",
     "Public SelectPage ConfirmButtonName": "确定",
     "Public Scanner NavigationTitle": "扫描二维码",
-    "Public OpenPassWord Title Input": "请输入8位开启密码：",
-    "Public OpenPassWord Title Set": "请设置8位开启密码：",
+    "Public OpenPassWord Title Input": "请输入6位以上开启密码：",
+    "Public OpenPassWord Title Set": "请设置6位以上开启密码：",
     "Public OpenPassWord ErrorTip": "密码不正确，请重新输入",
-    "Public OpenPassWord Input ErrorTip": "开启密码应为8位，且包含大小写字母、数字",
+    "Public OpenPassWord Input ErrorTip": "开启密码应为6位及以上",
     "Public OpenPassWord Button ButtonName": "进入",
+    "LoginPage account Label": "账号",
+
 };

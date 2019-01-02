@@ -56,9 +56,10 @@ export default class PrivatePage extends Component {
     };
 
     createPrivateKeyResponse = (data) => {
+        const createPrivateKey = this.encryptPrivateKey(data.PrivateKey);
         this.setState({
             createPublicKey: data.PublicKey,
-            createPrivateKey: this.encryptPrivateKey(data.PrivateKey),
+            createPrivateKey,
         });
     };
 
@@ -66,7 +67,7 @@ export default class PrivatePage extends Component {
         const data = {
             method: "checkPrivateKey",
             data: {
-                privateKey: this.decryptPrivateKey(this.state.checkPrivateKey),
+                privateKey: this.state.checkPrivateKey,
             },
         };
         this.refs.Ecc.refs.WebView.postMessage(JSON.stringify(data));
@@ -193,15 +194,15 @@ export default class PrivatePage extends Component {
         });
     };
 
-    SeePrivateKey = (ModalPrivateKey) => {
+    SeePrivateKey = (itemObj) => {
         this.setState({
             isShowModal: true,
-            ModalPrivateKey,
+            ModalPrivateKey: itemObj.PrivateKey,
         });
     };
 
     CopyPrivateKey = () => {
-        Clipboard.setString(this.decryptPrivateKey(this.state.ModalPrivateKey));
+        Clipboard.setString(this.state.ModalPrivateKey);
         this.setState({
             ModalCopyPrivateKeyState: true,
         });
@@ -266,7 +267,6 @@ export default class PrivatePage extends Component {
                     <View style={PrivatePageStyles.FromItem}>
                         <Button name={I18n.t("PrivatePage AddPrivateKey CardTitle And ButtonName")} onPress={this.checkPrivateKeyForAdd} Disable={this.state.addPrivateKeyButtonState}/>
                     </View>
-                    
                     {this.state.PrivateKeyFromStorage.length > 0 ? (
                         <View style={PrivatePageStyles.PrivateKeyList}>
                             <Text style={PrivatePageStyles.listTitle}>{I18n.t("PrivatePage AddPrivateKey HadAddPrivateKey Title")}</Text>
@@ -279,7 +279,7 @@ export default class PrivatePage extends Component {
                                             <Text style={PrivatePageStyles.listItemCon}>{itemObj.Nick} : {PrivateKeyFormat(PrivateKey)}</Text>
                                             <View style={PrivatePageStyles.listItemActions}>
                                                 <Text style={PrivatePageStyles.listItemDelete} onPress={() => this.openDeletePrivateModal(item)}>{I18n.t("PrivatePage AddPrivateKey HadAddPrivateKey Delete")}</Text>
-                                                <Text style={PrivatePageStyles.listItemDelete} onPress={() => this.SeePrivateKey(itemObj.PrivateKey)}>{I18n.t("PrivatePage AddPrivateKey HadAddPrivateKey Details")}</Text>
+                                                <Text style={PrivatePageStyles.listItemDelete} onPress={() => this.SeePrivateKey(itemObj)}>{I18n.t("PrivatePage AddPrivateKey HadAddPrivateKey Details")}</Text>
                                             </View>
                                         </View>
                                     );
@@ -296,13 +296,13 @@ export default class PrivatePage extends Component {
                         <View style={PrivatePageStyles.TextBox}>
                             <View style={PrivatePageStyles.TextItemBox}>
                                 <Text style={PrivatePageStyles.TextItemText}>PrivateKey(私钥)：{this.decryptPrivateKey(this.state.createPrivateKey)}</Text>
-                                <TouchableOpacity onPress={() => Clipboard.setString(this.decryptPrivateKey(this.state.createPrivateKey))} style={{position: "absolute", bottom: 3, right: 6}}>
+                                <TouchableOpacity onPress={() => Clipboard.setString(this.state.createPrivateKey)} style={{position: "absolute", top: 0, right: 6}}>
                                     <Icon name="md-copy" color="#222" size={22}/>
                                 </TouchableOpacity>
                             </View>
                             <View style={PrivatePageStyles.TextItemBox}>
                                 <Text style={PrivatePageStyles.TextItemText}>PublicKey(公钥，扫描二维码即可获得）：{this.state.createPublicKey}</Text>
-                                <TouchableOpacity onPress={() => Clipboard.setString(this.state.createPublicKey)} style={{position: "absolute", bottom: 3, right: 6}}>
+                                <TouchableOpacity onPress={() => Clipboard.setString(this.state.createPublicKey)} style={{position: "absolute", top: 0, right: 6}}>
                                     <Icon name="md-copy" color="#222" size={22}/>
                                 </TouchableOpacity>
                             </View>
@@ -313,9 +313,9 @@ export default class PrivatePage extends Component {
                     ) : null}
                 </Card>
                 <Card title={I18n.t("PrivatePage CheckPrivateKey CardTitle And ButtonName")} >
-                    <View style={[PrivatePageStyles.FromItem, {paddingRight: 30}]}>
-                        <TextInput required={true} label={I18n.t("PrivatePage CheckPrivateKey TextInput PrivateKey")} icon="lock" placeholder={I18n.t("PrivatePage CheckPrivateKey TextInput PrivateKey")} value={this.decryptPrivateKey(this.state.checkPrivateKey)} onChange={checkPrivateKey => this.setState({checkPrivateKey: this.encryptPrivateKey(checkPrivateKey)})} onBlur={() => {}}/>
-                        <TouchableOpacity onPress={() => Clipboard.getString().then(checkPrivateKey => this.setState({checkPrivateKey: this.encryptPrivateKey(checkPrivateKey)}))} style={{position: "absolute", top: 2, right: 0, padding: 5}}>
+                    <View style={PrivatePageStyles.FromItem}>
+                        <TextInput required={true} label={I18n.t("PrivatePage CheckPrivateKey TextInput PrivateKey")} icon="lock" placeholder={I18n.t("PrivatePage CheckPrivateKey TextInput PrivateKey")} value={this.state.checkPrivateKey} onChange={checkPrivateKey => this.setState({checkPrivateKey})} onBlur={() => {}}/>
+                        <TouchableOpacity onPress={() => Clipboard.getString().then(checkPrivateKey => this.setState({checkPrivateKey: this.decryptPrivateKey(checkPrivateKey)}))} style={{position: "absolute", top: 2, right: 6, padding: 5}}>
                             <Icon name="md-copy" color="#222" size={22}/>
                         </TouchableOpacity>
                     </View>

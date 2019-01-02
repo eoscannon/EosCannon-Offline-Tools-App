@@ -38,6 +38,7 @@ const PrivatePageStyles = StyleSheet.create({
         fontSize: 14,
         color: "#222",
         lineHeight: 28,
+        paddingRight: 20,
     },
     FromItem: {
         position: "relative",
@@ -53,7 +54,7 @@ const PrivatePageStyles = StyleSheet.create({
     },
     PrivateKeyList: {
         position: "relative",
-        width: "96%",
+        width: "92%",
         height: "auto",
         marginLeft: "auto",
         marginRight: "auto",

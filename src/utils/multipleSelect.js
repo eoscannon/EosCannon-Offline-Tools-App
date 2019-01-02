@@ -124,7 +124,7 @@ export default class CustomMultiPicker extends Component {
               <FlatList
                   style={[{ padding: 5, height: this.props.scrollViewHeight }, this.props.scrollViewStyle]}
                   onEndReachedThreshold={0.2}
-                  removeClippedSubviews={true}
+                  removeClippedSubviews={false}
                   keyExtractor={(item, index) => index + ""}
                   data={labels}
                   renderItem={({item, index}) => {
