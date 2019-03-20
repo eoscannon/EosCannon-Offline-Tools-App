@@ -74,13 +74,22 @@ export default class SignPage extends Component {
     onGetTransaction = () => {
         const { UnSignedBuffer, PrivateKey } = this.state;
         const decryptPrivateKey = this.decryptPrivateKey(PrivateKey);
+        var newUnSignedBuffer,UnSignedBufferParse
+        if(UnSignedBuffer.match('{')){
+            UnSignedBufferParse = JSON.parse(UnSignedBuffer)
+            newUnSignedBuffer = UnSignedBufferParse.sign
+        }else{
+            UnSignedBufferParse = UnSignedBuffer
+            newUnSignedBuffer = UnSignedBuffer
+        }
         const data = {
             method: "signTransaction",
             data: {
-                UnSignedBuffer,
+                UnSignedBuffer:newUnSignedBuffer,
                 PrivateKey: decryptPrivateKey,
             },
         };
+    
         this.refs.Ecc.refs.WebView.postMessage(JSON.stringify(data));
     };
 
