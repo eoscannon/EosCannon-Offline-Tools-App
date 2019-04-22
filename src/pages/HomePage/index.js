@@ -29,11 +29,6 @@ export default class HomePage extends Component {
                     actionName: "Homepage ButtonName SignPage",
                     disabled: false,
                     url: "SignPage",
-                },
-                {
-                    actionName: "Homepage ButtonName LoginPage",
-                    disabled: false,
-                    url: "LoginPage",
                 }
             ],
         };

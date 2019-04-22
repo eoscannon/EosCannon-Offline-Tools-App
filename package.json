@@ -7,18 +7,19 @@
     "test": "jest",
     "rmnode": "rm -rf node_modules",
     "clear": "rm -rf /tmp/metro-bundler-cache-* && rm -rf /tmp/haste-map-react-native-packager-*",
-    "ios": "react-native run-ios",
+    "ios": "react-native run-ios --simulator='iPhone 8'",
     "android": "react-native run-android",
     "keystore": "keytool -genkey -v -keystore my-release-key.keystore -alias my-key-alias -keyalg RSA -keysize 2048 -validity 10000",
     "bundle": "react-native bundle --entry-file index.js --bundle-output ./android/app/src/main/assets/index.android.jsbundle --platform android --assets-dest ./android/app/src/main/res/ --dev false",
-    "bundle-ios":"react-native bundle --entry-file index.js  --platform ios --dev false --bundle-output ./ios/bundle/index.ios.jsbundle --assets-dest ./ios/bundle",
+    "bundle-ios": "react-native bundle --entry-file index.js  --platform ios --dev false --bundle-output ./ios/bundle/index.ios.jsbundle --assets-dest ./ios/bundle",
     "clean": "rm -rf ./android/app/src/main/res/drawable-* ./android/app/src/main/res/drawable/*.gif ",
     "build": "cd android && ./gradlew assembleRelease"
   },
   "dependencies": {
     "crypto-js": "^3.1.9-1",
-    "react": "16.4.1",
-    "react-native": "0.56.0",
+    "empty-module": "^0.0.2",
+    "react": "^16.8.6",
+    "react-native": "0.57.7",
     "react-native-camera": "^1.1.4",
     "react-native-i18n": "^2.0.15",
     "react-native-keyboard-aware-scroll-view": "^0.6.0",
@@ -29,17 +30,20 @@
     "react-navigation": "^2.7.0",
     "react-redux": "^5.0.7",
     "redux": "^4.0.0",
-    "rn-splash-screen": "^5.2.0"
+    "rn-splash-screen": "^5.2.0",
+    "text-encoding":"^0.7.0"
   },
   "devDependencies": {
+    "@babel/cli": "^7.0.0",
+    "@babel/core": "^7.0.0",
     "babel-eslint": "^8.2.3",
-    "babel-jest": "22.4.3",
+    "babel-jest": "^24.7.1",
     "babel-plugin-import": "^1.8.0",
     "babel-preset-react-native": "^5.0.2",
     "eslint": "^4.19.1",
     "eslint-plugin-react": "^7.10.0",
-    "jest": "22.4.3",
-    "react-test-renderer": "16.3.0"
+    "jest": "^24.7.1",
+    "metro-react-native-babel-preset": "^0.53.1"
   },
   "jest": {
     "preset": "react-native"

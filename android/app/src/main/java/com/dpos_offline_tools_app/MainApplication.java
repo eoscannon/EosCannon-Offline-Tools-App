@@ -3,6 +3,7 @@ package com.dpos_offline_tools_app;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.lewin.qrcode.QRScanReaderPackage;
 import com.mehcode.reactnative.splashscreen.SplashScreenPackage;
 import com.AlexanderZaytsev.RNI18n.RNI18nPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
@@ -27,6 +28,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new QRScanReaderPackage(),
             new SplashScreenPackage(),
             new RNI18nPackage(),
             new VectorIconsPackage(),

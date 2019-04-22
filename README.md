@@ -1,3 +1,9 @@
-# EosCannon-Offline-Tools-App
+# dpos_offline_tools_app
 
-操作流程紧急更新中，请耐心等待。。。
+npm install
+
+配置 Images.xcassets
+
+配置  rn-splash-screen  https://github.com/mehcode/rn-splash-screen
+
+npm run ios
